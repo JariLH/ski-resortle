@@ -1,9 +1,599 @@
 :root {
-  color-scheme: light dark;
-  font-family: system-ui, -apple-system, sans-serif;
+  color-scheme: light;
+  --bg: #f2f2f7;
+  --card: #ffffff;
+  --text: #1d1d1f;
+  --muted: #6e6e73;
+  --chip: #f2f2f7;
+  --accent: #007aff;
+  --accent-pressed: #0062cc;
+  --green: #34c759;
+  --red: #ff3b30;
+  --radius: 16px;
+  --shadow: 0 1px 2px rgb(0 0 0 / 4%), 0 4px 16px rgb(0 0 0 / 4%);
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', system-ui, 'Segoe UI', Roboto, sans-serif;
+  color: var(--text);
+  background: var(--bg);
+  -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent;
+}
+
+* {
+  box-sizing: border-box;
 }
 
 body {
   margin: 0;
-  padding: 2rem 1rem;
+  min-height: 100dvh;
+  background: var(--bg);
+}
+
+#app {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  max-width: 760px;
+  margin: 0 auto;
+  padding: max(24px, env(safe-area-inset-top)) 16px max(16px, env(safe-area-inset-bottom));
+}
+
+.view {
+  flex: 1;
+}
+
+a {
+  color: var(--accent);
+}
+
+[hidden] {
+  display: none !important;
+}
+
+/* Buttons: abgerundet nach Apple-Vorbild */
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 0 22px;
+  border: none;
+  border-radius: 999px;
+  font: inherit;
+  font-weight: 600;
+  font-size: 1rem;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color 0.15s, transform 0.1s;
+}
+
+.button:active {
+  transform: scale(0.98);
+}
+
+.button.primary {
+  background: var(--accent);
+  color: #fff;
+}
+
+.button.primary:hover {
+  background: var(--accent-pressed);
+}
+
+.button.secondary {
+  background: var(--card);
+  color: var(--accent);
+  box-shadow: var(--shadow);
+}
+
+.button.large {
+  min-height: 56px;
+  padding: 0 32px;
+  font-size: 1.15rem;
+}
+
+.icon {
+  width: 1em;
+  height: 1em;
+  flex-shrink: 0;
+}
+
+/* Startseite */
+.start {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+  padding-top: 12vh;
+  text-align: center;
+}
+
+.logo {
+  margin: 0 0 16px;
+  font-size: clamp(2.6rem, 11vw, 4.5rem);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+}
+
+/* Serie als Bergpanorama */
+.streak {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  width: min(100%, 480px);
+  margin-top: 24px;
+}
+
+.panorama {
+  display: block;
+  width: 100%;
+  height: auto;
+  /* heller Himmel, damit die weißen Schneekappen sichtbar sind */
+  background: #e6eef6;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+
+.panorama .range-back {
+  fill: #c3cfdb;
+}
+
+.panorama .range-front {
+  fill: #7f93a8;
+}
+
+.panorama .snow {
+  fill: #ffffff;
+}
+
+.panorama .path-done,
+.panorama .path-todo {
+  fill: none;
+  stroke-width: 4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.panorama .path-done {
+  stroke: var(--accent);
+}
+
+.panorama .path-todo {
+  stroke: #b8c3ce;
+  stroke-dasharray: 2 9;
+}
+
+.panorama .flag-pole {
+  stroke: #3a4a5c;
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+
+.panorama .flag {
+  fill: var(--red);
+}
+
+/* Zahlen im Berg: aktuelle deutlich, alle anderen abgeschwächt */
+.panorama .peak-number {
+  fill: rgb(255 255 255 / 45%);
+  font-size: 20px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.panorama .peak-number.current {
+  fill: #ffffff;
+  font-size: 30px;
+  font-weight: 800;
+}
+
+.streak-label {
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+/* Platzhalterseiten */
+.page {
+  padding-top: 8vh;
+  text-align: center;
+}
+
+/* Runde */
+.game {
+  display: flex;
+  flex-direction: column;
+}
+
+.game-map {
+  height: min(52vh, 460px);
+  min-height: 260px;
+  border-radius: var(--radius);
+  overflow: hidden;
+  background: #e5e5ea;
+  box-shadow: var(--shadow);
+}
+
+.guess-form {
+  display: flex;
+  gap: 10px;
+  margin-top: 28px;
+}
+
+.input-wrap {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+}
+
+.guess-input {
+  width: 100%;
+  height: 52px;
+  padding: 0 18px;
+  border: none;
+  border-radius: 14px;
+  background: var(--card);
+  box-shadow: var(--shadow);
+  font: inherit;
+  /* 16px verhindert das automatische Zoomen auf iOS */
+  font-size: 1rem;
+  color: var(--text);
+  outline: none;
+}
+
+.guess-input:focus {
+  box-shadow: 0 0 0 3px rgb(0 122 255 / 30%);
+}
+
+.guess-input:disabled {
+  color: var(--muted);
+}
+
+.suggestions {
+  position: absolute;
+  z-index: 10;
+  top: calc(100% + 6px);
+  left: 0;
+  right: 0;
+  max-height: 280px;
+  overflow-y: auto;
+  margin: 0;
+  padding: 6px;
+  list-style: none;
+  background: var(--card);
+  border-radius: 14px;
+  box-shadow: 0 8px 32px rgb(0 0 0 / 12%);
+}
+
+.suggestions li {
+  padding: 10px 12px;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.suggestions li:hover,
+.suggestions li[aria-selected='true'] {
+  background: var(--chip);
+}
+
+.submit-button {
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  border: none;
+  border-radius: 14px;
+  background: var(--accent);
+  color: #fff;
+  font-size: 1.4rem;
+  cursor: pointer;
+}
+
+.submit-button:disabled {
+  background: #c7c7cc;
+  cursor: default;
+}
+
+.message {
+  min-height: 1.4em;
+  margin: 10px 4px 0;
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+.message strong {
+  color: var(--text);
+}
+
+/* Tipp-Tabelle: keine Trennlinien, jede Zeile ein weißes Feld */
+.guess-table {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+/* Kopfzeile und Tipp-Zeilen teilen sich dasselbe Raster */
+.guess-row,
+.guess-header {
+  display: grid;
+  grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr) 52px repeat(4, minmax(0, 1fr));
+  grid-template-areas: 'name dist country km lifts peak vert';
+  align-items: center;
+  gap: 6px;
+  padding: 10px;
+}
+
+.guess-row {
+  background: var(--card);
+  border-radius: 14px;
+  box-shadow: var(--shadow);
+}
+
+.guess-header {
+  padding-top: 0;
+  padding-bottom: 0;
+  color: var(--muted);
+  font-size: 0.72rem;
+  font-weight: 600;
+  line-height: 1.2;
+  text-align: center;
+}
+
+.guess-header .area-name {
+  padding: 0 6px;
+  text-align: left;
+}
+
+.area-name { grid-area: name; }
+.area-dist { grid-area: dist; }
+.area-country { grid-area: country; }
+.area-km { grid-area: km; }
+.area-lifts { grid-area: lifts; }
+.area-peak { grid-area: peak; }
+.area-vert { grid-area: vert; }
+
+.guess-name {
+  padding: 0 6px;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+.cell.distance {
+  font-size: 0.95rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+  padding: 4px 2px;
+  border-radius: 10px;
+  background: var(--chip);
+  white-space: nowrap;
+}
+
+.cell.ok {
+  background: var(--green);
+  color: #fff;
+}
+
+.flag {
+  font-size: 1.6rem;
+  line-height: 1;
+}
+
+.caption {
+  display: flex;
+  align-items: center;
+  height: 16px;
+  color: var(--muted);
+  font-size: 0.72rem;
+  font-weight: 500;
+}
+
+.caption .icon {
+  width: 16px;
+  height: 16px;
+}
+
+.cell.ok .caption {
+  color: rgb(255 255 255 / 85%);
+}
+
+.value {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.value .dir {
+  width: 0.95em;
+  height: 0.95em;
+}
+
+.show-result {
+  align-self: center;
+  margin-top: 32px;
+}
+
+/* Handy: Name und Entfernung über den Attributen */
+@media (max-width: 599px) {
+  .guess-row,
+  .guess-header {
+    grid-template-columns: 44px repeat(4, minmax(0, 1fr));
+    grid-template-areas:
+      'name name name dist dist'
+      'country km lifts peak vert';
+    gap: 5px;
+    padding: 8px;
+  }
+
+  .guess-header {
+    padding-top: 0;
+    padding-bottom: 0;
+    font-size: 0.66rem;
+  }
+
+  .guess-name,
+  .guess-header .area-name {
+    padding: 2px 4px;
+  }
+
+  .area-dist {
+    justify-self: end;
+  }
+
+  .guess-header .area-dist {
+    padding-right: 10px;
+  }
+
+  .cell.distance {
+    min-height: 30px;
+    padding: 0 10px;
+    font-size: 0.85rem;
+  }
+
+  .flag {
+    font-size: 1.35rem;
+  }
+
+  .value {
+    font-size: 0.8rem;
+  }
+}
+
+/* End-Popup */
+.result-dialog {
+  width: min(520px, calc(100vw - 32px));
+  max-height: calc(100dvh - 32px);
+  padding: 0;
+  border: none;
+  border-radius: 22px;
+  background: var(--card);
+  color: var(--text);
+  box-shadow: 0 20px 60px rgb(0 0 0 / 25%);
+  overflow-y: auto;
+}
+
+.result-dialog::backdrop {
+  background: rgb(0 0 0 / 35%);
+}
+
+.dialog-map {
+  height: 260px;
+}
+
+.dialog-close {
+  position: absolute;
+  z-index: 5;
+  top: 12px;
+  right: 12px;
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border: none;
+  border-radius: 999px;
+  background: rgb(255 255 255 / 92%);
+  box-shadow: var(--shadow);
+  color: var(--text);
+  font-size: 1.1rem;
+  cursor: pointer;
+}
+
+.dialog-body {
+  padding: 20px 24px 24px;
+  text-align: center;
+}
+
+.dialog-body h2 {
+  margin: 0;
+  font-size: 1.5rem;
+}
+
+.result-resort {
+  margin: 6px 0 0;
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+.result-attempts {
+  margin: 8px 0 0;
+  color: var(--muted);
+}
+
+.summary {
+  margin: 18px 0 0;
+  padding: 0;
+  list-style: none;
+  text-align: left;
+  counter-reset: guess;
+}
+
+.summary li {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 8px 12px;
+  border-radius: 10px;
+  counter-increment: guess;
+}
+
+.summary li:nth-child(odd) {
+  background: var(--chip);
+}
+
+.summary-name::before {
+  content: counter(guess) '. ';
+  color: var(--muted);
+}
+
+.summary li.wrong .summary-distance {
+  color: var(--red);
+  white-space: nowrap;
+}
+
+.summary li.correct .summary-distance {
+  color: var(--green);
+  font-weight: 600;
+}
+
+.share {
+  margin-top: 22px;
+}
+
+.share-status {
+  min-height: 1.3em;
+  margin: 8px 0 0;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+/* Fußzeile */
+.footer {
+  margin-top: 56px;
+  color: var(--muted);
+  font-size: 0.8rem;
+  text-align: center;
+}
+
+.footer p {
+  margin: 4px 0;
+}
+
+.footer a {
+  color: inherit;
+}
+
+/* Kartenattribution immer sichtbar */
+.maplibregl-ctrl-attrib {
+  font-size: 10px;
 }
