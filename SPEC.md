@@ -9,31 +9,109 @@ Unter der Karte zeigt jeder Tipp Attribute mit richtig/falsch bzw. höher/niedri
 
 ## Attribute
 
-- Land
-- Pistenkilometer
-- Höchster Punkt (m ü. NN)
-- Anzahl Lifte
-
-Offen:
-- [ ] Vergleich bei Zahlen: nur höher/niedriger oder zusätzlich eine „nah dran“-Stufe? Ab welcher Abweichung?
-- [ ] Bleibt es bei diesen vier Attributen?
+- Land (wahr / falsch)
+- Pistenkilometer (höher / niedriger)
+- Anzahl Lifte (höher / niedriger)
+- Höchster Punkt (m ü. NN) (höher / niedriger)
+- maximale Höhendifferenz (höher / niedriger)
 
 ## Karte
 
-- [ ] Was wird pro Tipp angezeigt (Distanzkreis, Richtung, Entfernung in km)?
-- [ ] Kartengrundlage
+- Karte zeigt über jedem Tipp die Entfernung in km
+- Kartengrundlage: OpenStreetMap
+- Kartendienst: OpenFreeMap mit MapLibre, Stil „Positron“
+- Attribution „© OpenStreetMap-Mitwirkende“ ist immer sichtbar auf der Karte
 
 ## Spielablauf
 
-- [ ] Anzahl Tipps
-- [ ] Modi (nur Tagesrätsel oder auch Übungsmodus)
-- [ ] Wann wechselt das Tagesrätsel?
-- [ ] Eingabe: Autocomplete, Umgang mit alternativen Namen
-- [ ] Ende der Runde: was wird angezeigt, Teilen-Funktion
-- [ ] Statistik und Serien
+- maximal 10 Tipps
+- Modi: nur Tagesrätsel, zu Testzwecken während der Entwicklung aber auch Übungsmodus
+- Tagesrätsel wechselt um 0:00 Uhr Berlin Zeit
+- Eingabe: Zeile zum Eingeben, dabei werden zu eingabe passende Ergebnisse vorgeschlagen, wenn man nur ins Eingabefeld klickt werden alle Alphabetisch vorgeschlagen
+- Tab-Taste im Eingabefeld schreibt den obersten Vorschlag in die Zeile (abgesendet wird erst mit Enter/Button)
+- bei alternativen namen wird angezeigt: "Do you mean: " und dann der richtige Name, um das dann als guess einzuloggen muss man nochmal absenden
+- Ende der Runde popup
+- Serie, wie viele Tage hintereinander das Rätsel gelößt wurde
 
 ## Daten
 
-- [ ] Was zählt als ein Gebiet (Ort oder Skiverbund)?
+- Datenquelle Skigebiete: OpenSkiData (openskidata.org), basiert auf OpenStreetMap
+- Lizenz ODbL: Quellenangabe im Spiel, der abgeleitete Datensatz bleibt unter ODbL
+- [ ] Wie Pistenkilometer, Lifte und Höhendifferenz gezählt werden
 - [ ] Regionale Abdeckung und Mindestgröße
-- [ ] Datenquelle und wie Pistenkilometer und Lifte gezählt werden
+- Weltweite abdeckung, es zählen nur tatsächliche Skigebiete, keine einzelnen Dorflifte (Bsp.: Skiarena Holzelfingen zählt,  Skilift Undingen vom TSV Undingen in Sonnenbühl zählt nicht)
+
+### Was zählt als ein Skigebiet
+
+Ein Skigebiet ist ein zusammenhängendes Netz aus Liften und Pisten. Zwei Lifte gehören
+zum selben Gebiet, wenn man zwischen ihnen in beide Richtungen nur mit Ski und Liften
+wechseln kann.
+
+Maßgeblich ist die Infrastruktur: Es zählt, was bei ausreichender Schneelage maximal
+möglich ist. Ob eine Verbindung tatsächlich offen ist, spielt keine Rolle, also auch
+nicht Saisonzeiten, Schneelage, Lawinensperren oder Betriebstage.
+
+Als Verbindung zählen:
+- markierte Pisten und Skirouten
+- Lifte jeder Art, auch reine Zubringer- oder Verbindungsbahnen ohne Piste zurück
+
+Keine Verbindung sind:
+- Skibus, Auto, öffentliche Bahn
+- Wege, für die man die Ski abschnallen muss
+- Varianten und Touren ohne Markierung
+
+Lifte und Pisten, die stillgelegt, abgebaut oder erst geplant sind, zählen nicht.
+
+Ticket- und Marketingverbünde (z. B. OK Bergbahnen, Ski amadé, Dolomiti Superski)
+sind keine Skigebiete und erscheinen nicht als Eintrag.
+
+Name: der gängigste Name des zusammenhängenden Gebiets (z. B. „Fellhorn/Kanzelwand“).
+Orte und Teilgebiete werden als Aliase hinterlegt (z. B. „Lech“ → Ski Arlberg).
+
+## UI
+
+- Website komplett auf englisch
+- Fußzeile mit Rechtlichem
+- hintergrundfarbe sehr helles grau
+- viel whitespace (hellgrau), schlichtes design 
+- alle Elemente mit abgerundeten Ecken (Apple design language)
+
+### Startseite
+
+- oben mittig groß das Logo bzw. der Name
+- darunter mittig ein Button "Play today's Ski-Resortle"
+- darunter eine Anzeige für die Streak, wie viele Tage hintereinader das Ski-Resortle gelößt wurde
+  - als illustrierte Bergkette (flach, blaugrau, Schneekappen): jeder Tag ist ein Gipfel, von links nach rechts, Tag 0 ist der Startpunkt im Tal
+  - die Kette wandert mit: sichtbar sind die letzten 3 erreichten Gipfel, der aktuelle und die nächsten 3 (7 insgesamt)
+  - zurückgelegter Weg als blaue Linie entlang des Grats, auf jedem erreichten Gipfel ein rotes Fähnchen; der offene Weg ist grau gestrichelt
+  - jeder Gipfel trägt seine Zahl im Berg unter der Schneekappe: die aktuelle groß und weiß, alle anderen abgeschwächt
+
+### Innerhalb einer Runde
+- oben mittig groß Karte mit allen möglichen Skiegebieten, sonst keine Karteninformationen, die bisherigen Tipps sind rot markiert, wird der richtige gefunden wird er grün markiert
+- unter der Karte mit etwas abstand die Zeile zum Eingeben des Tipps
+- rechts neben der Zeile ein quadratischer Button zum Absenden des guesses, alternativ mit Enter absenden
+- unter der Zeile zum Eingeben mit etwas Abstand eine "Tabelle" in der untereinader die Tipps stehen, dabei in dem Format: "Name des Resorts | Entfernung zur Lösung in km wie auf der Karte (graues Feld, beim Treffer grün) | Flagge des Landes (grün hinterlegt wenn richtig, sonst grau wie die anderen Felder) | Pistenkilometer (dahinter Pfeil mit higher / lower; wenn genau richtig, dann grün hinterlegt) | Anzahl Lifte (dahinter Pfeil mit higher / lower; wenn genau richtig, dann grün hinterlegt) | Gipfelsymbol mit Punkt an der Spitze für höchsten Punkt (dahinter Pfeil mit higher / lower; wenn genau richtig, dann grün hinterlegt) | Pfeil mit 2 Enden als Symbol für maximaler Höhendifferenz (dahinter Pfeil mit higher / lower; wenn genau richtig, dann grün hinterlegt)"
+- über der obersten Zeile steht eine Kopfzeile mit den Kategorien: Resort | Distance | Country | Slopes | Lifts | Highest Point | Elevation Gain (erscheint ab dem ersten Tipp; die Zellen behalten ihre kleinen Beschriftungen/Icons). Auf dem Handy steht Distance rechts neben dem Namen
+- die "Tabelle besteht hat keine Trennlinien, jede Zeile ist ein "Feld" in weiß, dazwischen ist etwas Platz
+- gibt man einen neuen Tipp ab, wird die "Tabelle" um eine Zeile erweitert
+- ganz unten Button "show result", dann zeigt es die Lösung und das Raten ist beendet
+- wenn es richtig erraten wurde popup mit oben Groß die Karte herangezoomt aufs richtige Resort, unter der Karte Anzahl versuche und Zusammenfassung der abgegebenen Tipps, im popout außerdem die Möglichkeit das eigene Ergebnis über socials zu teilen ; klickt man das popup weg kommt man wieder auf die Startseite
+
+## Entscheidungen (Rückfragen vom 2026-11-04)
+
+- Karte: alle Gebiete mit Namen eingezeichnet (grauer Punkt, grauer Name). Falsch getippte: roter Name, daneben Entfernung in km. Lösung: grüner Name
+- Karte startet mit der Weltansicht und zoomt nach jedem Tipp so, dass alle Tipps sichtbar sind
+- Klick auf ein Gebiet in der Karte schreibt den Namen ins Eingabefeld, abgesendet wird erst mit Button/Enter
+- Pfeil höher/niedriger zeigt die Richtung der Lösung (Pfeil hoch = Lösung hat mehr)
+- Doppelter Tipp: Hinweis „Already guessed“, zählt nicht als Versuch
+- Unbekannte Eingabe: Hinweis „Unknown resort“, zählt nicht als Versuch
+- Länderflaggen als Emoji
+- Tagesrätsel: Liste mit festem Seed gemischt, Tag n nimmt Eintrag n (Tag 0 = 2026-01-01), danach von vorne
+- Übungsmodus: Button „Practice“ nur im Dev-Server, zufälliges Gebiet, zählt nicht für die Serie
+- 10 Fehlversuche oder „show result“: gleiches Popup wie beim Gewinnen, Überschrift „The resort was“, Serie wird 0
+- Erneuter Klick auf „Play today’s Ski-Resortle“ nach Rundenende: beendete Runde mit gesperrter Eingabe, Popup darüber
+- Zusammenfassung im Popup: getippte Namen mit Entfernung
+- Teilen: auf Touch-Geräten System-Teilen-Menü, sonst Kopieren in die Zwischenablage; Text mit Datum, Versuchen, Emoji-Zeile pro Tipp und Link
+- Serie: +1 pro gelöstem Tag, bleibt sichtbar, solange gestern gelöst wurde; Niederlage oder ausgelassener Tag setzt auf 0
+- Name/Logo: „Ski-Resortle“ als Text
+- Fußzeile: Quellenangaben (OSM, OpenSkiData, ODbL) und Links „Legal notice“ / „Privacy“ auf Platzhalterseiten
