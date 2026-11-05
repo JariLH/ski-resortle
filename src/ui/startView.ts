@@ -3,18 +3,16 @@ import { streakPanorama } from './streakPanorama.ts';
 
 export interface StartViewOptions {
   streak: number;
-  /** Übungsmodus nur im Dev-Server anbieten. */
-  showPractice: boolean;
 }
 
-export function renderStartView(root: HTMLElement, { streak, showPractice }: StartViewOptions): void {
+export function renderStartView(root: HTMLElement, { streak }: StartViewOptions): void {
   root.replaceChildren(
     h(
       'div',
       { class: 'start' },
       h('h1', { class: 'logo' }, 'Ski-Resortle'),
       h('a', { class: 'button primary large', href: '#/play' }, "Play today's Ski-Resortle"),
-      showPractice ? h('a', { class: 'button secondary', href: '#/practice' }, 'Practice') : null,
+      h('a', { class: 'button secondary', href: '#/practice' }, 'Practice'),
       h('div', { class: 'streak' }, streakPanorama(streak), h('span', { class: 'streak-label' }, 'day streak')),
     ),
   );

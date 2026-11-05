@@ -9,9 +9,6 @@ import { renderGameView } from './ui/gameView.ts';
 import { renderPlaceholderPage, renderStartView } from './ui/startView.ts';
 import { loadDailyGame, loadStreak } from './ui/storage.ts';
 
-// Übungsmodus nur während der Entwicklung (npm run dev).
-const PRACTICE_ENABLED = import.meta.env.DEV;
-
 const app = document.querySelector<HTMLElement>('#app')!;
 const view = h('div', { class: 'view' });
 app.replaceChildren(view, footer());
@@ -56,7 +53,6 @@ function route(): void {
       break;
     }
     case '/practice': {
-      if (!PRACTICE_ENABLED) return goHome();
       const state = newGame('practice', today, randomResort(RESORTS).id);
       cleanup = renderGameView(view, { state, resorts: RESORTS, onExit: goHome });
       break;
@@ -68,7 +64,7 @@ function route(): void {
       renderPlaceholderPage(view, 'Privacy');
       break;
     default:
-      renderStartView(view, { streak: displayedStreak(loadStreak(), today), showPractice: PRACTICE_ENABLED });
+      renderStartView(view, { streak: displayedStreak(loadStreak(), today) });
   }
   window.scrollTo(0, 0);
 }

@@ -25,7 +25,7 @@ Unter der Karte zeigt jeder Tipp Attribute mit richtig/falsch bzw. höher/niedri
 ## Spielablauf
 
 - maximal 10 Tipps
-- Modi: nur Tagesrätsel, zu Testzwecken während der Entwicklung aber auch Übungsmodus
+- Modi: Tagesrätsel und Übungsmodus (für alle spielbar, zufälliges Gebiet, zählt nicht für die Serie)
 - Tagesrätsel wechselt um 0:00 Uhr Berlin Zeit
 - Eingabe: Zeile zum Eingeben, dabei werden zu eingabe passende Ergebnisse vorgeschlagen, wenn man nur ins Eingabefeld klickt werden alle Alphabetisch vorgeschlagen
 - Tab-Taste im Eingabefeld schreibt den obersten Vorschlag in die Zeile (abgesendet wird erst mit Enter/Button)
@@ -107,7 +107,7 @@ Orte und Teilgebiete werden als Aliase hinterlegt (z. B. „Lech“ → Ski Arlb
 - Unbekannte Eingabe: Hinweis „Unknown resort“, zählt nicht als Versuch
 - Länderflaggen als Emoji
 - Tagesrätsel: Liste mit festem Seed gemischt, Tag n nimmt Eintrag n (Tag 0 = 2026-01-01), danach von vorne
-- Übungsmodus: Button „Practice“ nur im Dev-Server, zufälliges Gebiet, zählt nicht für die Serie
+- Übungsmodus: Button „Practice“ auf der Startseite für alle, zufälliges Gebiet, zählt nicht für die Serie
 - 10 Fehlversuche oder „show result“: gleiches Popup wie beim Gewinnen, Überschrift „The resort was“, Serie wird 0
 - Erneuter Klick auf „Play today’s Ski-Resortle“ nach Rundenende: beendete Runde mit gesperrter Eingabe, Popup darüber
 - Zusammenfassung im Popup: getippte Namen mit Entfernung
