@@ -38,6 +38,9 @@ export const OVERRIDES: Overrides = {
     '1fd29b021584344dd3b8f2960fe561faf357bfe2': 'Schladming Dachstein: Ramsau, Fageralm, Galsterberg nicht mit der 4-Berge-Skischaukel verbunden',
     e615b3d384f0063fb20af785b477a97fdce907bc: 'Val di Fassa: Talname; Belvedere und Buffaure–Ciampac gehören zur Sellaronda, Catinaccio nur per Skibus',
     '0f8835a2f4fdcb5d19a63c665a77e9e99f8aa42a': 'Kotelnica Białczańska (Ośrodek): Kaniówka und Lift 13 nur per Skibus',
+    // Fehleinträge
+    '17b19c745f7d69545421bdb985f0b981abfc70ae':
+      'Grindelwald - Männlichen (Schlittelpiste): Schlittelweg, dem Lifte aus der ganzen Jungfrauregion zugeordnet sind; das Skigebiet ist Grindelwald-Wengen',
   },
   merge: {
     // Sälen
@@ -123,6 +126,7 @@ export const OVERRIDES: Overrides = {
     '8ff7c34b93e1bc6da29f199f301a7c1871a9352b': 'Catinaccio',
     '9c8c1c1000130abb373b7e6f4d7259b897b6807c': 'Kotelnica Białczańska',
     fca6e2a27977f0cdca3016e8e9c4a9a643d53f2b: 'Sellaronda',
+    '1d111e0379650f6a9186eaa3d21dadf973340c88': 'Grindelwald-Wengen', // Grindelwald - Wengen (Kleine Scheidegg - Männlichen)
   },
   aliases: {
     '53410fc611922a26e32535c74bb1d9364cef4ecd': ['Lech', 'Zürs', 'St. Anton am Arlberg', 'St. Christoph', 'Stuben', 'Warth', 'Schröcken'],
@@ -167,6 +171,7 @@ export const OVERRIDES: Overrides = {
       'Campitello di Fassa',
       'Passo Pordoi',
     ],
+    '1d111e0379650f6a9186eaa3d21dadf973340c88': ['Männlichen', 'Kleine Scheidegg', 'Wengen'],
   },
   dropAliases: {
     '72822087f1d1ea98cc8b02132a5ff66d19d2a829': ['龙岗山滑雪场（即将开业）'],
