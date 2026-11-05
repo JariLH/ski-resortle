@@ -10,7 +10,11 @@ import type { Overrides } from './import/transform.ts';
 // - merge: Teile eines Netzes, die in OpenSkiData getrennt und ohne gemeinsame Lifte erfasst sind
 //   (Pisten-km werden addiert, Lifte ohne Doppelte gezählt)
 // - keepSeparate: Gebiete, die die Automatik fälschlich als Teilgebiet einfaltet
+// - dropLifts: einzelne Lifte, die OpenSkiData einem Gebiet zuordnet, die aber nicht mit Ski erreichbar sind
+//   (Schlüssel: Lift-ID, bei zerstückelten Liften die kleinste Abschnitts-ID; Pisten-km und Höhen
+//   bleiben unverändert, weil die Pisten nicht einzeln vorliegen)
 // - rename, aliases: Name und zusätzliche Aliase
+// - dropAliases: unpassende Aliase aus den OpenSkiData-Namen
 export const OVERRIDES: Overrides = {
   exclude: {
     // Ticket- und Marketingverbünde
@@ -29,6 +33,7 @@ export const OVERRIDES: Overrides = {
   },
   merge: {},
   keepSeparate: [],
+  dropLifts: {},
   rename: {
     // Englische Namen für Gebiete ohne lateinischen Namen in OpenSkiData (recherchiert 2026-11-05);
     // der Originalname wird automatisch Alias. „Übersetzt“ = kein gängiger englischer Name gefunden.
@@ -84,4 +89,5 @@ export const OVERRIDES: Overrides = {
     c92b9a5fae2f2a7314528e836e9409774e63659c: ['Mylin Valley'],
     efcb8ce39fdff9fbf1d8918742699b95077bbca0: ['Big Wood'],
   },
+  dropAliases: {},
 };

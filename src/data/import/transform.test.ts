@@ -11,7 +11,15 @@ import {
   type Overrides,
 } from './transform.ts';
 
-const NO_OVERRIDES: Overrides = { exclude: {}, merge: {}, keepSeparate: [], rename: {}, aliases: {} };
+const NO_OVERRIDES: Overrides = {
+  exclude: {},
+  merge: {},
+  keepSeparate: [],
+  dropLifts: {},
+  rename: {},
+  aliases: {},
+  dropAliases: {},
+};
 
 function lifts(prefix: string, count: number): Set<string> {
   return new Set(Array.from({ length: count }, (_, i) => `${prefix}${i}`));
@@ -301,6 +309,25 @@ describe('buildResorts', () => {
     // Handgepflegte Aliase haben Vorrang vor gleichen Varianten aus den Daten.
     expect(resorts.find((r) => r.id === 'a')?.aliases).toEqual(['ARENA X', 'Dorf', 'Skiarena X']);
     expect(report.droppedAliases).toEqual(['Lech (bei X)']);
+  });
+
+  it('entfernt unpassende Aliase aus den Daten', () => {
+    const a = area({ id: 'a', rawName: 'Berg, Berg (eröffnet bald), Monte' });
+    const { resorts } = buildResorts([a], { ...NO_OVERRIDES, dropAliases: { a: ['berg (Eröffnet Bald)'] } });
+    expect(resorts[0]?.aliases).toEqual(['Monte']);
+  });
+
+  it('entfernt Lifte, die nicht zum Netz gehören', () => {
+    const a = area({ id: 'a', liftIds: new Set(['l1', 'l2', 'l3', 'l4']) });
+    const { resorts, report } = buildResorts([a], { ...NO_OVERRIDES, dropLifts: { l4: 'Dorflift', weg: 'alt' } });
+    expect(resorts[0]?.lifts).toBe(3);
+    expect(report.unknownOverrideIds).toEqual(['weg']);
+  });
+
+  it('wendet die Mindestgröße nach dem Entfernen von Liften an', () => {
+    const a = area({ id: 'a', liftIds: new Set(['l1', 'l2', 'l3']) });
+    const { resorts } = buildResorts([a], { ...NO_OVERRIDES, dropLifts: { l3: 'Dorflift' } });
+    expect(resorts).toEqual([]);
   });
 
   it('ergänzt doppelte Namen um die Region', () => {

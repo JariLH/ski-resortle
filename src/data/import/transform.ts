@@ -67,8 +67,12 @@ export interface Overrides {
   merge: Record<string, string[]>;
   /** IDs, die nie automatisch als Teilgebiet eingefaltet werden. */
   keepSeparate: string[];
+  /** Lift-ID → Begründung: Lifte, die OpenSkiData einem Gebiet zuordnet, die aber nicht zu dessen Netz gehören. */
+  dropLifts: Record<string, string>;
   rename: Record<string, string>;
   aliases: Record<string, string[]>;
+  /** Aliase, die aus den OpenSkiData-Namen entstehen, aber nicht passen (z. B. Zusätze wie „eröffnet demnächst“). */
+  dropAliases: Record<string, string[]>;
 }
 
 // ---------------------------------------------------------------------------
@@ -325,8 +329,12 @@ export function buildResorts(
     ...overrides.keepSeparate,
     ...Object.keys(overrides.rename),
     ...Object.keys(overrides.aliases),
+    ...Object.keys(overrides.dropAliases),
   ];
   report.unknownOverrideIds = [...new Set(overrideIds.filter((id) => !byId.has(id)))];
+  const knownLifts = new Set(areas.flatMap((a) => [...a.liftIds]));
+  const droppedLifts = new Set(Object.keys(overrides.dropLifts));
+  report.unknownOverrideIds.push(...[...droppedLifts].filter((id) => !knownLifts.has(id)));
 
   // 1. Nur Alpin-Gebiete in Betrieb; Verbünde und Fehleinträge raus
   const entries = new Map<string, Entry>();
@@ -337,7 +345,8 @@ export function buildResorts(
       report.excluded.push({ id: area.id, name: area.rawName, reason });
       continue;
     }
-    entries.set(area.id, { area: { ...area, liftIds: new Set(area.liftIds) }, absorbedNames: [], children: [] });
+    const liftIds = new Set([...area.liftIds].filter((id) => !droppedLifts.has(id)));
+    entries.set(area.id, { area: { ...area, liftIds }, absorbedNames: [], children: [] });
   }
 
   // 2. Getrennt erfasste Teile desselben Netzes zusammenlegen
@@ -460,9 +469,10 @@ export function buildResorts(
   const allNames = new Set(selected.map((s) => normalize(s.name)));
   const resorts: Resort[] = selected.map(({ area, name, aliases }) => {
     const own = normalize(name);
+    const unwanted = new Set((overrides.dropAliases[area.id] ?? []).map(normalize));
     const cleaned = unique(aliases).filter((alias) => {
       const key = normalize(alias);
-      if (key === own) return false;
+      if (key === own || unwanted.has(key)) return false;
       if (allNames.has(key)) {
         report.droppedAliases.push(`${alias} (bei ${name})`);
         return false;
