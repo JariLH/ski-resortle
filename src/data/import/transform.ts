@@ -39,6 +39,7 @@ export interface OsdLiftFeature {
     id: string;
     name?: string | null;
     status: string | null;
+    places?: OsdPlace[];
     liftType: string | null;
     skiAreas: { properties: { id: string } }[];
   };
@@ -98,14 +99,17 @@ export interface Area {
   minElevation: number | null;
 }
 
+/** Nur Lifte in Betrieb und ohne Förderbänder zählen. */
+function countedLifts(lifts: readonly OsdLiftFeature[]): OsdLiftFeature[] {
+  return lifts.filter(({ properties: p }) => p.status === 'operating' && !IGNORED_LIFT_TYPES.has(p.liftType ?? ''));
+}
+
 /**
  * Lift-ID-Mengen je Gebiet: nur Lifte in Betrieb und ohne Förderbänder.
  * Abschnitte desselben Lifts zählen einmal, unter der ID des Abschnitts mit der kleinsten ID.
  */
 export function liftsByArea(lifts: readonly OsdLiftFeature[]): Map<string, Set<string>> {
-  const counted = lifts.filter(
-    ({ properties: p }) => p.status === 'operating' && !IGNORED_LIFT_TYPES.has(p.liftType ?? ''),
-  );
+  const counted = countedLifts(lifts);
   const unitOf = liftUnits(counted);
   const index = new Map<string, Set<string>>();
   for (const { properties: lift } of counted) {
@@ -117,6 +121,35 @@ export function liftsByArea(lifts: readonly OsdLiftFeature[]): Map<string, Set<s
     }
   }
   return index;
+}
+
+/** Länder je Lift (IDs wie in liftsByArea); ein Lift über die Grenze liegt in beiden. */
+export function countriesByLift(lifts: readonly OsdLiftFeature[]): Map<string, string[]> {
+  const counted = countedLifts(lifts);
+  const unitOf = liftUnits(counted);
+  const index = new Map<string, string[]>();
+  for (const { properties: lift } of counted) {
+    const id = unitOf(lift.id);
+    const countries = index.get(id) ?? [];
+    for (const code of countriesOf(lift.places ?? [])) if (!countries.includes(code)) countries.push(code);
+    index.set(id, countries);
+  }
+  return index;
+}
+
+/**
+ * Länder eines Gebiets nach der Zahl seiner Lifte, die dort stehen; bei Gleichstand in der Reihenfolge
+ * der Orte des Gebiets. Die Orte allein sind unzuverlässig (Grenznähe genügt), daher zählen die Lifte.
+ */
+export function countriesOfLifts(liftIds: Iterable<string>, liftCountries: Map<string, string[]>, places: readonly OsdPlace[]): string[] {
+  const counts = new Map<string, number>();
+  for (const id of liftIds) for (const code of liftCountries.get(id) ?? []) counts.set(code, (counts.get(code) ?? 0) + 1);
+  const fallback = countriesOf(places);
+  if (counts.size === 0) return fallback;
+  const rank = (code: string): number => (fallback.includes(code) ? fallback.indexOf(code) : fallback.length);
+  return [...counts.entries()]
+    .sort((a, b) => b[1] - a[1] || rank(a[0]) - rank(b[0]) || (a[0] < b[0] ? -1 : 1))
+    .map(([code]) => code);
 }
 
 /**
@@ -189,8 +222,13 @@ function finite(values: (number | null | undefined)[]): number[] {
   return values.filter((v): v is number => typeof v === 'number' && Number.isFinite(v));
 }
 
-export function parseArea(feature: OsdSkiAreaFeature, liftIndex: Map<string, Set<string>>): Area {
+export function parseArea(
+  feature: OsdSkiAreaFeature,
+  liftIndex: Map<string, Set<string>>,
+  liftCountries: Map<string, string[]> = new Map(),
+): Area {
   const p = feature.properties;
+  const liftIds = liftIndex.get(p.id) ?? new Set<string>();
   const runs = Object.values(p.statistics.runs.byActivity.downhill?.byDifficulty ?? {});
   const lifts = Object.values(p.statistics.lifts.byType);
   const parts = [...runs, ...lifts];
@@ -202,12 +240,12 @@ export function parseArea(feature: OsdSkiAreaFeature, liftIndex: Map<string, Set
     rawName: p.name?.trim() || null,
     operating: p.status === 'operating',
     downhill: p.activities.includes('downhill'),
-    countries: countriesOf(p.places),
+    countries: countriesOfLifts(liftIds, liftCountries, p.places),
     region: p.places.find((pl) => pl.localized?.en?.region)?.localized?.en?.region ?? null,
     lat,
     lon,
     pisteKm: runs.reduce((sum, s) => sum + (s.lengthInKm ?? 0), 0),
-    liftIds: liftIndex.get(p.id) ?? new Set(),
+    liftIds,
     maxElevation: highs.length > 0 ? Math.max(...highs) : null,
     minElevation: lows.length > 0 ? Math.min(...lows) : null,
   };

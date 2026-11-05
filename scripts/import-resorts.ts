@@ -3,7 +3,7 @@
 //         `npm run import-data -- --download` (Exporte neu laden)
 // Läuft direkt mit Node (Type Stripping), daher nur Node-Bordmittel und keine Typprüfung durch tsc.
 import { existsSync, mkdirSync, readFileSync, statSync, writeFileSync } from 'node:fs';
-import { buildResorts, liftsByArea, parseArea } from '../src/data/import/transform.ts';
+import { buildResorts, countriesByLift, liftsByArea, parseArea } from '../src/data/import/transform.ts';
 import { OVERRIDES } from '../src/data/overrides.ts';
 
 const BASE_URL = 'https://tiles.openskimap.org/geojson';
@@ -30,7 +30,8 @@ const liftsPath = await ensureFile('lifts.geojson', forceDownload);
 const areaFeatures = JSON.parse(readFileSync(areasPath, 'utf8')).features;
 const liftFeatures = JSON.parse(readFileSync(liftsPath, 'utf8')).features;
 const liftIndex = liftsByArea(liftFeatures);
-const areas = areaFeatures.map((f) => parseArea(f, liftIndex));
+const liftCountries = countriesByLift(liftFeatures);
+const areas = areaFeatures.map((f) => parseArea(f, liftIndex, liftCountries));
 const { resorts, report } = buildResorts(areas, OVERRIDES);
 
 const ids = new Set(resorts.map((r) => r.id));

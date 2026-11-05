@@ -1,7 +1,9 @@
 import { describe, expect, it } from 'vitest';
 import {
   buildResorts,
+  countriesByLift,
   countriesOf,
+  countriesOfLifts,
   liftsByArea,
   parseArea,
   pickName,
@@ -97,6 +99,41 @@ describe('liftsByArea', () => {
       segment('g1', 'Jonction', 'gondola', 6, 8),
     ]);
     expect(index.get('a')!.size).toBe(5);
+  });
+});
+
+describe('Länder aus Liftstandorten', () => {
+  function placed(id: string, codes: string[]): OsdLiftFeature {
+    const feature = lift(id, ['a']);
+    feature.properties.places = codes.map((code) => ({ iso3166_1Alpha2: code }));
+    return feature;
+  }
+
+  it('ordnet jedem Lift seine Länder zu, ein Lift über die Grenze hat beide', () => {
+    const index = countriesByLift([placed('l1', ['AT']), placed('l2', ['DE', 'AT']), placed('l3', [])]);
+    expect(Object.fromEntries(index)).toEqual({ l1: ['AT'], l2: ['DE', 'AT'], l3: [] });
+  });
+
+  it('sortiert nach Anzahl der Lifte und ignoriert Orte ohne Lift', () => {
+    const liftCountries = new Map([
+      ['l1', ['AT']],
+      ['l2', ['AT']],
+      ['l3', ['IT', 'AT']],
+    ]);
+    const places = [{ iso3166_1Alpha2: 'IT' }, { iso3166_1Alpha2: 'IT' }, { iso3166_1Alpha2: 'CH' }];
+    expect(countriesOfLifts(['l1', 'l2', 'l3'], liftCountries, places)).toEqual(['AT', 'IT']);
+  });
+
+  it('entscheidet Gleichstand nach den Orten des Gebiets', () => {
+    const liftCountries = new Map([
+      ['l1', ['AT']],
+      ['l2', ['DE']],
+    ]);
+    expect(countriesOfLifts(['l1', 'l2'], liftCountries, [{ iso3166_1Alpha2: 'DE' }])).toEqual(['DE', 'AT']);
+  });
+
+  it('nimmt die Orte des Gebiets, wenn kein Lift ein Land hat', () => {
+    expect(countriesOfLifts(['l1'], new Map(), [{ iso3166_1Alpha2: 'CH' }])).toEqual(['CH']);
   });
 });
 
