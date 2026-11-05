@@ -1,11 +1,5 @@
 # Skiresortle
 
-Tägliches Rätsel: Finde das Skigebiet.
+'Currently in beta!'
 
-```bash
-npm install
-npm run dev      # http://localhost:5173
-npm run check    # Typecheck und Tests
-```
-
-Benötigt Node.js 22.12 oder neuer.
+try at: jarilh.github.io/ski-resortle
