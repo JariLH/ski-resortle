@@ -39,6 +39,7 @@ export const OVERRIDES: Overrides = {
     e615b3d384f0063fb20af785b477a97fdce907bc: 'Val di Fassa: Talname; Belvedere und Buffaure–Ciampac gehören zur Sellaronda, Catinaccio nur per Skibus',
     '0f8835a2f4fdcb5d19a63c665a77e9e99f8aa42a': 'Kotelnica Białczańska (Ośrodek): Kaniówka und Lift 13 nur per Skibus',
     // Fehleinträge
+    d720e3ed313444de056ebba8a74932c3039c941b: 'Gsieser Tal: drei einzelne Dorflifte, bis zu 8 km auseinander',
     '17b19c745f7d69545421bdb985f0b981abfc70ae':
       'Grindelwald - Männlichen (Schlittelpiste): Schlittelweg, dem Lifte aus der ganzen Jungfrauregion zugeordnet sind; das Skigebiet ist Grindelwald-Wengen',
   },
@@ -56,6 +57,10 @@ export const OVERRIDES: Overrides = {
     b9741233afaf8f4d626c4fa8fa1b56ff58335703: ['85381fdafddd86791587b1f61c1f648dd548c3c9'], // Skeikampen Alpinsenter + Skeikampen
     '1cf7acf015bc92534cbf95d94061f54bfbb9aa8c': ['134e40756909a8f508fc0ddf7cecb17070fbd23c'], // Sirdal Skisenter + Sirdal
     '113a4bc3948c9b9243f2d7946302149a0898a3e0': ['71bf8219b562c0bab6b0b51e393a4b89649d3121'], // Gaustablikk + Gausta skisenter
+    // Teilgebiete, die Lifte des Hauptgebiets enthalten, die dort fehlen
+    '2cbe407409b5340a8a35266314043918b4f7526f': ['1336d370cbf1842863ce4e15bdeb29eb9c08ff9e'], // Savognin + Kinderskiparadies La Nars (Gondel Tigignas)
+    de4f884c40976fe9d18c23d0bab174c1d6b79218: ['34c3dc543a71495ffe5c7267a898311a3b49014e'], // GrandValira + Canaro (Lifte in Grau Roig, Encamp, Canillo)
+    b7cad93e857de92335debf15f4d0bfe9a04f4d1b: ['57ae08fed6a2d9f34bd70c4c3c06332bd44134a6'], // Mont Tremblant + „Ski de fond“ (Dorfgondeln)
     // Sellaronda: Val Gardena + Alta Badia + Arabba + Marmolada + Belvedere/Col Rodella + Buffaure–Ciampac
     // (ohne Seiser Alm, Kronplatz, Cortina und Catinaccio: dorthin nur Skibus oder Einbahn-Abfahrt)
     fca6e2a27977f0cdca3016e8e9c4a9a643d53f2b: [
@@ -143,6 +148,7 @@ export const OVERRIDES: Overrides = {
     f9beaf4e37ef88b422b9ee4aa2ae9224f10afd02: 'St. Moritz – Corviglia', // Corviglia
     fd830ae87b04dcc7ab252d9b7f21cb21029dd61f: 'Madonna di Campiglio', // Campiglio Dolomiti di Brenta
     fb20868f99b43dbfe8cf7195c47619680ac21f37: 'See im Paznaun', // See
+    b120c998e46941d19e34ac55c2a4d9332c2462a0: 'Tawatinaw Valley', // Tawaitnaw Cross Country Ski Trails (Tippfehler, Skihügel mit T-Bügeln)
   },
   aliases: {
     '53410fc611922a26e32535c74bb1d9364cef4ecd': ['Lech', 'Zürs', 'St. Anton am Arlberg', 'St. Christoph', 'Stuben', 'Warth', 'Schröcken'],
@@ -196,8 +202,11 @@ export const OVERRIDES: Overrides = {
     cd6cd576ac1a8785d423d174200b9a4a920df1e1: ['Jasná', 'Chopok'],
     '5ffd86e2374dc98261a846de36bfc510ab758dfc': ['Champoluc', 'Gressoney-La-Trinité', 'Gressoney', 'Alagna Valsesia', 'Alagna'],
     '0e7ba1fd10a2afbc6e188d1f9936f843cc665583': ['Mayrhofen', 'Penken', 'Horberg'],
+    b120c998e46941d19e34ac55c2a4d9332c2462a0: ['Tawatinaw', 'Athabasca'],
   },
   dropAliases: {
+    b7cad93e857de92335debf15f4d0bfe9a04f4d1b: ['Ski de fond Mont-Tremblant'],
+    b120c998e46941d19e34ac55c2a4d9332c2462a0: ['Tawaitnaw Cross Country Ski Trails'],
     '72822087f1d1ea98cc8b02132a5ff66d19d2a829': ['龙岗山滑雪场（即将开业）'],
   },
 };
