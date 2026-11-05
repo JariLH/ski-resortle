@@ -52,6 +52,10 @@ export const OVERRIDES: Overrides = {
     a52b30a524e35adb64e78425a0a8e62dad0f0006: ['b9dc9702b0595480837d45098fa72c625df05c55', '5f7de23fab06265e451f0b12f9336071f2f5fbec'],
     // Kotelnica + Bania
     '9c8c1c1000130abb373b7e6f4d7259b897b6807c': ['fa15c1df1603abe1cd5d058c8b6b64de459c8fcf'],
+    // Dasselbe Gebiet in zwei Teilen erfasst (Lifte liegen ineinander)
+    b9741233afaf8f4d626c4fa8fa1b56ff58335703: ['85381fdafddd86791587b1f61c1f648dd548c3c9'], // Skeikampen Alpinsenter + Skeikampen
+    '1cf7acf015bc92534cbf95d94061f54bfbb9aa8c': ['134e40756909a8f508fc0ddf7cecb17070fbd23c'], // Sirdal Skisenter + Sirdal
+    '113a4bc3948c9b9243f2d7946302149a0898a3e0': ['71bf8219b562c0bab6b0b51e393a4b89649d3121'], // Gaustablikk + Gausta skisenter
     // Sellaronda: Val Gardena + Alta Badia + Arabba + Marmolada + Belvedere/Col Rodella + Buffaure–Ciampac
     // (ohne Seiser Alm, Kronplatz, Cortina und Catinaccio: dorthin nur Skibus oder Einbahn-Abfahrt)
     fca6e2a27977f0cdca3016e8e9c4a9a643d53f2b: [
@@ -127,6 +131,18 @@ export const OVERRIDES: Overrides = {
     '9c8c1c1000130abb373b7e6f4d7259b897b6807c': 'Kotelnica Białczańska',
     fca6e2a27977f0cdca3016e8e9c4a9a643d53f2b: 'Sellaronda',
     '1d111e0379650f6a9186eaa3d21dadf973340c88': 'Grindelwald-Wengen', // Grindelwald - Wengen (Kleine Scheidegg - Männlichen)
+    // Sperrige Namen aus OpenStreetMap; bekannte Namen gehören in den Namen, weil die Vorschläge nur Namen durchsuchen
+    b9741233afaf8f4d626c4fa8fa1b56ff58335703: 'Skeikampen', // Skeikampen Alpinsenter
+    '97e9df8fc8d999cf9e62628866e49af00598fba0': 'Titlis – Engelberg', // Skipisten Titlis Bergbahnen
+    '7b90db5563af65f3d07a5bc8469f632c313301e1': 'Gulmarg', // Gulmarg Ski Resort area Phase 2
+    a485de04d1b518ac50b60887ac630a742927ed06: 'Bjelašnica', // OC Bjelašnica ZOI '84
+    '8ebbe708c3f7b24aac9cd9d3293dc3b53d405f92': 'Bad Gastein – Bad Hofgastein', // Ski Gastein - Schlossalm/Angertal/Stubnerkogel
+    '6e135ea2a7e28e5194c76ef6acba0c49302a02e1': 'Vallter 2000', // Estació d'esquí i muntanya Vallter 2000
+    b0474b173deabca7cc8c3b5e9070b881220db472: 'Kolašin 1450', // Kolašin 1450 ski resort
+    '7271a35a016b0c4f937677edc5b7a71f64ea1b36': 'Las Araucarias', // Las Araucarias (Formerly Llaima)
+    f9beaf4e37ef88b422b9ee4aa2ae9224f10afd02: 'St. Moritz – Corviglia', // Corviglia
+    fd830ae87b04dcc7ab252d9b7f21cb21029dd61f: 'Madonna di Campiglio', // Campiglio Dolomiti di Brenta
+    fb20868f99b43dbfe8cf7195c47619680ac21f37: 'See im Paznaun', // See
   },
   aliases: {
     '53410fc611922a26e32535c74bb1d9364cef4ecd': ['Lech', 'Zürs', 'St. Anton am Arlberg', 'St. Christoph', 'Stuben', 'Warth', 'Schröcken'],
@@ -172,6 +188,14 @@ export const OVERRIDES: Overrides = {
       'Passo Pordoi',
     ],
     '1d111e0379650f6a9186eaa3d21dadf973340c88': ['Männlichen', 'Kleine Scheidegg', 'Wengen'],
+    '97e9df8fc8d999cf9e62628866e49af00598fba0': ['Titlis', 'Engelberg'],
+    '8ebbe708c3f7b24aac9cd9d3293dc3b53d405f92': ['Schlossalm', 'Angertal', 'Stubnerkogel'],
+    '7271a35a016b0c4f937677edc5b7a71f64ea1b36': ['Llaima'],
+    f9beaf4e37ef88b422b9ee4aa2ae9224f10afd02: ['St. Moritz', 'Corviglia'],
+    efaa82d7ae8e42868f19ed2abb8001f518a404d0: ['Grand Massif', 'Flaine', 'Samoëns', 'Les Carroz', 'Morillon', 'Sixt'],
+    cd6cd576ac1a8785d423d174200b9a4a920df1e1: ['Jasná', 'Chopok'],
+    '5ffd86e2374dc98261a846de36bfc510ab758dfc': ['Champoluc', 'Gressoney-La-Trinité', 'Gressoney', 'Alagna Valsesia', 'Alagna'],
+    '0e7ba1fd10a2afbc6e188d1f9936f843cc665583': ['Mayrhofen', 'Penken', 'Horberg'],
   },
   dropAliases: {
     '72822087f1d1ea98cc8b02132a5ff66d19d2a829': ['龙岗山滑雪场（即将开业）'],
