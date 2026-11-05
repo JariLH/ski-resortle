@@ -37,10 +37,12 @@ export interface OsdSkiAreaFeature {
 export interface OsdLiftFeature {
   properties: {
     id: string;
+    name?: string | null;
     status: string | null;
     liftType: string | null;
     skiAreas: { properties: { id: string } }[];
   };
+  geometry?: { type: string; coordinates: unknown } | null;
 }
 
 // ---------------------------------------------------------------------------
@@ -50,6 +52,8 @@ export const MIN_PISTE_KM = 3;
 export const MIN_LIFTS = 3;
 /** Förderbänder zählen nicht als Lift. */
 const IGNORED_LIFT_TYPES = new Set(['magic_carpet']);
+/** Bahnen, die in OpenStreetMap oft in viele Abschnitte zerlegt sind (Weichen, Ausweichen, Brücken). */
+const RAIL_LIFT_TYPES = new Set(['funicular', 'railway']);
 /** Ein Gebiet ist Teilgebiet eines größeren, wenn mindestens dieser Anteil seiner Lifte auch zum größeren gehört. */
 export const SUB_AREA_SHARE = 0.5;
 /** Länge der Spiel-ID (Anfang der OpenSkiData-ID); kurz, damit Challenge-Links kurz bleiben. */
@@ -90,19 +94,81 @@ export interface Area {
   minElevation: number | null;
 }
 
-/** Lift-ID-Mengen je Gebiet: nur Lifte in Betrieb und ohne Förderbänder. */
+/**
+ * Lift-ID-Mengen je Gebiet: nur Lifte in Betrieb und ohne Förderbänder.
+ * Abschnitte desselben Lifts zählen einmal, unter der ID des Abschnitts mit der kleinsten ID.
+ */
 export function liftsByArea(lifts: readonly OsdLiftFeature[]): Map<string, Set<string>> {
+  const counted = lifts.filter(
+    ({ properties: p }) => p.status === 'operating' && !IGNORED_LIFT_TYPES.has(p.liftType ?? ''),
+  );
+  const unitOf = liftUnits(counted);
   const index = new Map<string, Set<string>>();
-  for (const { properties: lift } of lifts) {
-    if (lift.status !== 'operating' || IGNORED_LIFT_TYPES.has(lift.liftType ?? '')) continue;
+  for (const { properties: lift } of counted) {
     for (const area of lift.skiAreas) {
       const id = area.properties.id;
       let set = index.get(id);
       if (!set) index.set(id, (set = new Set()));
-      set.add(lift.id);
+      set.add(unitOf(lift.id));
     }
   }
   return index;
+}
+
+/**
+ * Fasst Abschnitte eines Lifts zusammen: gleicher Typ und Name, und das Ende des einen Abschnitts
+ * ist der Anfang des nächsten. Bei Bahnen genügt ein gemeinsamer Endpunkt in beliebiger Richtung
+ * (Ausweichen sind oft gegenläufig erfasst), und auch unbenannte Abschnitte werden zusammengefasst.
+ * Bei anderen Liften nur benannte, damit zwei unbenannte Schlepplifte in Reihe getrennt bleiben.
+ */
+function liftUnits(lifts: readonly OsdLiftFeature[]): (id: string) => string {
+  const parent = new Map<string, string>();
+  const find = (id: string): string => {
+    let current = id;
+    while (parent.get(current) !== current) current = parent.get(current)!;
+    return current;
+  };
+  const union = (a: string, b: string): void => {
+    const [ra, rb] = [find(a), find(b)];
+    if (ra < rb) parent.set(rb, ra);
+    else if (rb < ra) parent.set(ra, rb);
+  };
+
+  const starts = new Map<string, string[]>();
+  const add = (key: string, id: string): void => {
+    const ids = starts.get(key);
+    if (ids) ids.push(id);
+    else starts.set(key, [id]);
+  };
+  const chainable: { id: string; group: string; rail: boolean; ends: [string, string] }[] = [];
+  for (const { properties: p, geometry } of lifts) {
+    parent.set(p.id, p.id);
+    const ends = endpoints(geometry);
+    const rail = RAIL_LIFT_TYPES.has(p.liftType ?? '');
+    const name = p.name?.trim() ?? '';
+    if (!ends || (!rail && name === '')) continue;
+    const group = `${p.liftType}|${name}`;
+    chainable.push({ id: p.id, group, rail, ends });
+    add(`${group}|${ends[0]}`, p.id);
+    if (rail) add(`${group}|${ends[1]}`, p.id);
+  }
+  for (const { id, group, rail, ends } of chainable) {
+    for (const end of rail ? ends : [ends[1]]) {
+      for (const other of starts.get(`${group}|${end}`) ?? []) union(id, other);
+    }
+  }
+  return find;
+}
+
+/** Anfangs- und Endpunkt einer Liftlinie, auf ca. 1 m gerundet. */
+function endpoints(geometry: OsdLiftFeature['geometry']): [string, string] | null {
+  if (geometry?.type !== 'LineString' || !Array.isArray(geometry.coordinates)) return null;
+  const coords = geometry.coordinates as number[][];
+  const first = coords[0];
+  const last = coords[coords.length - 1];
+  if (!first || !last || coords.length < 2) return null;
+  const key = (c: number[]): string => `${c[0]?.toFixed(5)},${c[1]?.toFixed(5)}`;
+  return [key(first), key(last)];
 }
 
 /** Ländercodes nach Häufigkeit in den Orten, bei Gleichstand in Reihenfolge des Auftretens. */

@@ -49,6 +49,47 @@ describe('liftsByArea', () => {
     expect([...index.get('a')!]).toEqual(['l1', 'l2']);
     expect([...index.get('b')!]).toEqual(['l2']);
   });
+
+  /** Lift mit Name und Linie von `from` nach `to` (x-Koordinaten, y = 0). */
+  function segment(id: string, name: string | null, liftType: string, from: number, to: number, areas = ['a']): OsdLiftFeature {
+    const feature = lift(id, areas, liftType);
+    feature.properties.name = name;
+    feature.geometry = { type: 'LineString', coordinates: [[from, 0, 1000], [to, 0, 1100]] };
+    return feature;
+  }
+
+  it('zählt aneinander anschließende Abschnitte eines Lifts einmal', () => {
+    const index = liftsByArea([
+      segment('s2', 'Gondel', 'gondola', 1, 2),
+      segment('s1', 'Gondel', 'gondola', 0, 1),
+      segment('s3', 'Gondel', 'gondola', 2, 3, ['a', 'b']),
+    ]);
+    expect([...index.get('a')!]).toEqual(['s1']);
+    expect([...index.get('b')!]).toEqual(['s1']);
+  });
+
+  it('fasst Bahnabschnitte auch ohne Namen und gegenläufig zusammen', () => {
+    const index = liftsByArea([
+      segment('f1', null, 'funicular', 0, 1),
+      segment('f2', null, 'funicular', 2, 1),
+      segment('f3', null, 'funicular', 2, 3),
+    ]);
+    expect(index.get('a')!.size).toBe(1);
+  });
+
+  it('trennt verschiedene Lifte', () => {
+    const index = liftsByArea([
+      // unbenannte Schlepplifte in Reihe
+      segment('d1', null, 'drag_lift', 0, 1),
+      segment('d2', null, 'drag_lift', 1, 2),
+      // gleichnamige Sessellifte mit gemeinsamer Talstation
+      segment('c1', 'Jonction', 'chair_lift', 5, 6),
+      segment('c2', 'Jonction', 'chair_lift', 5, 7),
+      // anderer Typ am selben Punkt
+      segment('g1', 'Jonction', 'gondola', 6, 8),
+    ]);
+    expect(index.get('a')!.size).toBe(5);
+  });
 });
 
 describe('countriesOf', () => {

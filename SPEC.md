@@ -40,7 +40,7 @@ Unter der Karte zeigt jeder Tipp Attribute mit richtig/falsch bzw. höher/niedri
 - Weltweite abdeckung, es zählen nur tatsächliche Skigebiete, keine einzelnen Dorflifte (Bsp.: Skiarena Holzelfingen zählt,  Skilift Undingen vom TSV Undingen in Sonnenbühl zählt nicht)
 - Mindestgröße: in Betrieb, mit Alpin-Pisten und Namen, mindestens 3 km Pisten und mindestens 3 Lifte
 - Pistenkilometer: Gesamtlänge der Alpin-Pisten laut OpenSkiData (kein Langlauf)
-- Lifte: alle Lifttypen außer Förderbändern
+- Lifte: alle Lifttypen außer Förderbändern. Ein Lift, der in OpenStreetMap in mehrere Abschnitte zerlegt ist, zählt einmal: Abschnitte mit gleichem Typ und Namen, die nahtlos aneinander anschließen, sind ein Lift (unbenannte Abschnitte nur bei Standseil- und Zahnradbahnen)
 - Höchster Punkt: höchster Punkt von Pisten und Liften; Höhendifferenz: höchster minus tiefster Punkt von Pisten und Liften
 - Grenzüberschreitende Gebiete haben mehrere Länder; die Land-Zelle ist grün, wenn Tipp und Lösung mindestens ein Land gemeinsam haben
 - Abgrenzung: Gebiete aus OpenSkiData werden übernommen, eine handgepflegte Korrekturliste schließt Verbünde und Fehleinträge aus, legt Teilgebiete zusammen und setzt Namen und Aliase
