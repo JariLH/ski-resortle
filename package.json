@@ -14,7 +14,8 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run --passWithNoTests",
     "test:watch": "vitest",
-    "check": "npm run typecheck && npm run test"
+    "check": "npm run typecheck && npm run test",
+    "import-data": "node scripts/import-resorts.ts"
   },
   "devDependencies": {
     "typescript": "^7.0.2",
