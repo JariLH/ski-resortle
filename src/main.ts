@@ -1,5 +1,5 @@
 import './style.css';
-import { RESORTS } from './data/resorts.ts';
+import { DATA_DATE, RESORTS } from './data/resorts.ts';
 import { CHALLENGE_PARAM, decodeChallenge } from './logic/challenge.ts';
 import { dailyResort, randomResort } from './logic/daily.ts';
 import { berlinDateKey } from './logic/dates.ts';
@@ -32,7 +32,7 @@ function footer(): HTMLElement {
       link('https://openskidata.org', 'OpenSkiData'),
       ' (',
       link('https://opendatacommons.org/licenses/odbl/', 'ODbL'),
-      ')',
+      `), as of ${DATA_DATE}`,
     ),
     h('p', {}, h('a', { href: '#/legal' }, 'Legal notice'), ' · ', h('a', { href: '#/privacy' }, 'Privacy')),
   );
