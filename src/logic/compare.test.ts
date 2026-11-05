@@ -25,7 +25,7 @@ describe('distanceKm', () => {
 });
 
 describe('compareResorts', () => {
-  const target = makeResort({ id: 't', name: 'Ziel', country: 'AT', pisteKm: 100, lifts: 20, topElevation: 2000, verticalDrop: 1000 });
+  const target = makeResort({ id: 't', name: 'Ziel', countries: ['AT'], pisteKm: 100, lifts: 20, topElevation: 2000, verticalDrop: 1000 });
 
   it('erkennt den richtigen Tipp', () => {
     const c = compareResorts(target, target);
@@ -44,7 +44,7 @@ describe('compareResorts', () => {
     const guess = makeResort({
       id: 'g',
       name: 'Tipp',
-      country: 'CH',
+      countries: ['CH'],
       lat: 48,
       pisteKm: 50,
       lifts: 30,
@@ -59,5 +59,15 @@ describe('compareResorts', () => {
     expect(c.topElevation).toBe('equal');
     expect(c.verticalDrop).toBe('lower');
     expect(c.distanceKm).toBe(111);
+  });
+
+  it('wertet das Land als richtig, wenn ein Land gemeinsam ist', () => {
+    const border = makeResort({ id: 'b', name: 'Grenzgebiet', countries: ['CH', 'AT'] });
+    const swiss = makeResort({ id: 's', name: 'Schweiz', countries: ['CH'] });
+    const french = makeResort({ id: 'f', name: 'Frankreich', countries: ['FR'] });
+    expect(compareResorts(border, target).countryMatch).toBe(true);
+    expect(compareResorts(target, border).countryMatch).toBe(true);
+    expect(compareResorts(swiss, border).countryMatch).toBe(true);
+    expect(compareResorts(french, border).countryMatch).toBe(false);
   });
 });

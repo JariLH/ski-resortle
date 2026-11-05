@@ -22,7 +22,8 @@ describe('RESORTS', () => {
 
   it('hat gültige Werte', () => {
     for (const r of RESORTS) {
-      expect(r.country, r.id).toMatch(/^[A-Z]{2}$/);
+      expect(r.countries.length, r.id).toBeGreaterThan(0);
+      for (const c of r.countries) expect(c, r.id).toMatch(/^[A-Z]{2}$/);
       expect(Math.abs(r.lat), r.id).toBeLessThanOrEqual(90);
       expect(Math.abs(r.lon), r.id).toBeLessThanOrEqual(180);
       for (const value of [r.pisteKm, r.lifts, r.topElevation, r.verticalDrop]) {

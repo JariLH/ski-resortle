@@ -6,8 +6,8 @@ export interface Resort {
   name: string;
   /** Orte und Teilgebiete, z. B. „Lech“ für Ski Arlberg. */
   aliases: string[];
-  /** Ländercode nach ISO 3166-1 alpha-2, z. B. „AT“. */
-  country: string;
+  /** Ländercodes nach ISO 3166-1 alpha-2, z. B. [„AT“, „CH“]; Hauptland zuerst. */
+  countries: string[];
   lat: number;
   lon: number;
   /** Pistenkilometer */

@@ -142,7 +142,7 @@ export function openResultDialog(options: ResultDialogOptions): () => void {
       'div',
       { class: 'dialog-body' },
       h('h2', { id: 'result-title' }, won ? 'You found it!' : 'The resort was'),
-      h('p', { class: 'result-resort' }, `${flagEmoji(target.country)} ${target.name}`),
+      h('p', { class: 'result-resort' }, `${target.countries.map(flagEmoji).join('')} ${target.name}`),
       h('p', { class: 'result-attempts' }, attempts),
       ...details,
       h('div', { class: 'share' }, challengeButton, shareStatus),

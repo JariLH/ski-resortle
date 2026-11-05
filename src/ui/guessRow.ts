@@ -64,7 +64,7 @@ function numberCell(area: Area, caption: Node | string, label: string, value: st
 
 /** Eine Zeile der Tipp-Tabelle. */
 export function guessRow(resort: Resort, c: Comparison): HTMLElement {
-  const country = countryName(resort.country);
+  const country = resort.countries.map(countryName).join(', ');
   return h(
     'div',
     { class: `guess-row${c.correct ? ' correct' : ''}`, role: 'row' },
@@ -81,12 +81,12 @@ export function guessRow(resort: Resort, c: Comparison): HTMLElement {
     h(
       'div',
       {
-        class: `cell country area-country${c.countryMatch ? ' ok' : ''}`,
+        class: `cell country area-country${resort.countries.length > 1 ? ' multi' : ''}${c.countryMatch ? ' ok' : ''}`,
         role: 'cell',
         title: country,
         'aria-label': `Country: ${country}, ${c.countryMatch ? 'correct' : 'wrong'}`,
       },
-      h('span', { class: 'flag' }, flagEmoji(resort.country)),
+      ...resort.countries.map((code) => h('span', { class: 'flag' }, flagEmoji(code))),
     ),
     numberCell('km', 'km', 'Slopes', `${resort.pisteKm}`, c.pisteKm),
     numberCell('lifts', 'lifts', 'Lifts', `${resort.lifts}`, c.lifts),

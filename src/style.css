@@ -399,6 +399,11 @@ a {
   line-height: 1;
 }
 
+/* Grenzgebiete: Flaggen kleiner und untereinander */
+.cell.multi .flag {
+  font-size: 1.1rem;
+}
+
 .caption {
   display: flex;
   align-items: center;
@@ -475,6 +480,10 @@ a {
 
   .flag {
     font-size: 1.35rem;
+  }
+
+  .cell.multi .flag {
+    font-size: 1rem;
   }
 
   .value {

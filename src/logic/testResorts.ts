@@ -4,7 +4,7 @@ import type { Resort } from '../data/resort.ts';
 export function makeResort(overrides: Partial<Resort> & Pick<Resort, 'id' | 'name'>): Resort {
   return {
     aliases: [],
-    country: 'AT',
+    countries: ['AT'],
     lat: 47,
     lon: 11,
     pisteKm: 100,
@@ -17,8 +17,8 @@ export function makeResort(overrides: Partial<Resort> & Pick<Resort, 'id' | 'nam
 
 export const TEST_RESORTS: Resort[] = [
   makeResort({ id: 'arlberg', name: 'Ski Arlberg', aliases: ['Lech', 'St. Anton am Arlberg'] }),
-  makeResort({ id: 'zermatt', name: 'Matterhorn Ski Paradise', aliases: ['Zermatt'], country: 'CH' }),
-  makeResort({ id: 'vallees', name: 'Les 3 Vallées', aliases: ['Méribel'], country: 'FR' }),
-  makeResort({ id: 'feldberg', name: 'Feldberg', country: 'DE' }),
-  makeResort({ id: 'fellhorn', name: 'Fellhorn/Kanzelwand', aliases: ['Fellhorn'], country: 'DE' }),
+  makeResort({ id: 'zermatt', name: 'Matterhorn Ski Paradise', aliases: ['Zermatt'], countries: ['CH'] }),
+  makeResort({ id: 'vallees', name: 'Les 3 Vallées', aliases: ['Méribel'], countries: ['FR'] }),
+  makeResort({ id: 'feldberg', name: 'Feldberg', countries: ['DE'] }),
+  makeResort({ id: 'fellhorn', name: 'Fellhorn/Kanzelwand', aliases: ['Fellhorn'], countries: ['DE'] }),
 ];

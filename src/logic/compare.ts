@@ -6,6 +6,7 @@ export type Direction = 'higher' | 'lower' | 'equal';
 
 export interface Comparison {
   correct: boolean;
+  /** Tipp und Lösung haben mindestens ein Land gemeinsam. */
   countryMatch: boolean;
   pisteKm: Direction;
   lifts: Direction;
@@ -25,7 +26,7 @@ export function direction(guessValue: number, targetValue: number): Direction {
 export function compareResorts(guess: Resort, target: Resort): Comparison {
   return {
     correct: guess.id === target.id,
-    countryMatch: guess.country === target.country,
+    countryMatch: guess.countries.some((c) => target.countries.includes(c)),
     pisteKm: direction(guess.pisteKm, target.pisteKm),
     lifts: direction(guess.lifts, target.lifts),
     topElevation: direction(guess.topElevation, target.topElevation),
