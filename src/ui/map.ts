@@ -12,7 +12,7 @@ import workerUrl from 'maplibre-gl/dist/maplibre-gl-worker.mjs?url';
 // Typen kommen mit maplibre-gl (@types/geojson).
 import type { FeatureCollection } from 'geojson';
 import type { Resort } from '../data/resort.ts';
-import { formatKm } from '../logic/share.ts';
+import { formatKm } from '../logic/format.ts';
 
 setWorkerUrl(workerUrl);
 

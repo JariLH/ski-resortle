@@ -1,8 +1,10 @@
+import { decodeChallenge, encodeChallenge, type Challenge } from '../logic/challenge.ts';
 import { isGameState, type GameState } from '../logic/game.ts';
 import { EMPTY_STREAK, isStreakState, type StreakState } from '../logic/streak.ts';
 
 const DAILY_KEY = 'ski-resortle:daily';
 const STREAK_KEY = 'ski-resortle:streak';
+const CHALLENGE_KEY = 'ski-resortle:challenge';
 
 // localStorage kann fehlen oder werfen (privater Modus, blockierte Website-Daten).
 function read(key: string): unknown {
@@ -30,6 +32,18 @@ export function loadDailyGame(date: string): GameState | null {
 
 export function saveDailyGame(state: GameState): void {
   if (state.mode === 'daily') write(DAILY_KEY, state);
+}
+
+/** Challenge für das heutige Tagesrätsel, nur wenn sie zum angegebenen Tag gehört. */
+export function loadDailyChallenge(date: string): Challenge | null {
+  const value = read(CHALLENGE_KEY);
+  if (typeof value !== 'string') return null;
+  const challenge = decodeChallenge(value);
+  return challenge && challenge.mode === 'daily' && challenge.date === date ? challenge : null;
+}
+
+export function saveDailyChallenge(challenge: Challenge): void {
+  if (challenge.mode === 'daily') write(CHALLENGE_KEY, encodeChallenge(challenge));
 }
 
 export function loadStreak(): StreakState {

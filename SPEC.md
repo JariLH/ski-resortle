@@ -95,7 +95,7 @@ Orte und Teilgebiete werden als Aliase hinterlegt (z. B. „Lech“ → Ski Arlb
 - die "Tabelle besteht hat keine Trennlinien, jede Zeile ist ein "Feld" in weiß, dazwischen ist etwas Platz
 - gibt man einen neuen Tipp ab, wird die "Tabelle" um eine Zeile erweitert
 - ganz unten Button "show result", dann zeigt es die Lösung und das Raten ist beendet
-- wenn es richtig erraten wurde popup mit oben Groß die Karte herangezoomt aufs richtige Resort, unter der Karte Anzahl versuche und Zusammenfassung der abgegebenen Tipps, im popout außerdem die Möglichkeit das eigene Ergebnis über socials zu teilen ; klickt man das popup weg kommt man wieder auf die Startseite
+- wenn es richtig erraten wurde popup mit oben Groß die Karte herangezoomt aufs richtige Resort, unter der Karte Anzahl versuche und Zusammenfassung der abgegebenen Tipps, im popout außerdem der Button "Challenge a friend" (siehe unten); klickt man das popup weg kommt man wieder auf die Startseite
 
 ## Entscheidungen (Rückfragen vom 2026-11-04)
 
@@ -111,7 +111,18 @@ Orte und Teilgebiete werden als Aliase hinterlegt (z. B. „Lech“ → Ski Arlb
 - 10 Fehlversuche oder „show result“: gleiches Popup wie beim Gewinnen, Überschrift „The resort was“, Serie wird 0
 - Erneuter Klick auf „Play today’s Ski-Resortle“ nach Rundenende: beendete Runde mit gesperrter Eingabe, Popup darüber
 - Zusammenfassung im Popup: getippte Namen mit Entfernung
-- Teilen: auf Touch-Geräten System-Teilen-Menü, sonst Kopieren in die Zwischenablage; Text mit Datum, Versuchen, Emoji-Zeile pro Tipp und Link
 - Serie: +1 pro gelöstem Tag, bleibt sichtbar, solange gestern gelöst wurde; Niederlage oder ausgelassener Tag setzt auf 0
 - Name/Logo: „Ski-Resortle“ als Text
 - Fußzeile: Quellenangaben (OSM, OpenSkiData, ODbL) und Links „Legal notice“ / „Privacy“ auf Platzhalterseiten
+
+### Challenge a friend
+
+- ersetzt das frühere Teilen des Ergebnisses; Button "Challenge a friend" im End-Popup, auch im Übungsmodus
+- erzeugt einen Link: auf Touch-Geräten über das System-Teilen-Menü, sonst in die Zwischenablage ("Link copied to clipboard")
+- mitgeschickter Text ohne Spoiler: "I solved today's Ski-Resortle in 4 guesses. Can you beat me?" bzw. "I couldn't solve today's Ski-Resortle. Can you?" (Übungsmodus: "this Ski-Resortle")
+- der Link enthält Datum, Gebiet, Tippfolge und Ergebnis des Herausforderers (kein Backend); im Übungsmodus spielt der Freund dadurch dasselbe Gebiet
+- die Daten im Link sind verschleiert, damit man die Lösung nicht durch einfaches Base64-Dekodieren lesen kann (kein echter Schutz)
+- wer den Link öffnet, landet direkt im heutigen Spiel; hat er heute schon gespielt, sieht er sofort das End-Popup mit dem Vergleich
+- die Challenge wird für den Tag gespeichert: der Vergleich erscheint auch, wenn man später über die Startseite ins heutige Spiel kommt; ein zweiter Link vom selben Tag ersetzt den ersten
+- Link von einem anderen Tag: wird ignoriert, über der Karte steht "This challenge has expired – here is today's Ski-Resortle"
+- Vergleich im Popup unter "Solved in … / Not solved …" (ohne zusätzlichen Vergleichstext): beide Tippfolgen nebeneinander ("You" | "Challenger"), Tipp 1 neben Tipp 1 usw., jeweils Name und km, Treffer grün umrandet; der Kopf der Spalte mit weniger Tipps ist grün hinterlegt

@@ -1,58 +1,61 @@
 import type { Resort } from '../data/resort.ts';
+import {
+  challengeFromGame,
+  challengeMessage,
+  challengeUrl,
+  challengeWinner,
+} from '../logic/challenge.ts';
 import type { Comparison } from '../logic/compare.ts';
+import { flagEmoji, formatKm, guessesText } from '../logic/format.ts';
 import { MAX_GUESSES, type GameState } from '../logic/game.ts';
-import { flagEmoji, formatKm, shareText } from '../logic/share.ts';
 import { h } from './dom.ts';
 import { closeIcon } from './icons.ts';
 import { createResortMap, type MarkedResort } from './map.ts';
 
+export interface GuessResult {
+  resort: Resort;
+  comparison: Comparison;
+}
+
+/** Ergebnis eines Spielers: gelöst und Tippfolge. */
+export interface PlayerGuesses {
+  won: boolean;
+  guesses: GuessResult[];
+}
+
 export interface ResultDialogOptions {
   state: GameState;
   target: Resort;
-  guesses: { resort: Resort; comparison: Comparison }[];
+  guesses: GuessResult[];
+  /** Ergebnis des Herausforderers aus dem Challenge-Link, sonst `null` */
+  challenger: PlayerGuesses | null;
   resorts: readonly Resort[];
   marked: readonly MarkedResort[];
   onClose: () => void;
 }
 
-function shareUrl(): string {
-  return `${location.origin}${location.pathname}`;
-}
-
 /** Auf Touch-Geräten das System-Teilen-Menü, sonst in die Zwischenablage kopieren. */
-async function share(text: string): Promise<'shared' | 'copied' | 'failed'> {
+async function shareLink(message: string, url: string): Promise<'shared' | 'copied' | 'failed'> {
   const preferNativeShare = typeof navigator.share === 'function' && matchMedia('(pointer: coarse)').matches;
   if (preferNativeShare) {
     try {
-      await navigator.share({ text });
+      await navigator.share({ text: message, url });
       return 'shared';
     } catch (error) {
       if (error instanceof DOMException && error.name === 'AbortError') return 'shared';
     }
   }
   try {
-    await navigator.clipboard.writeText(text);
+    await navigator.clipboard.writeText(`${message}\n${url}`);
     return 'copied';
   } catch {
     return 'failed';
   }
 }
 
-/**
- * End-Popup: Karte auf die Lösung gezoomt, Anzahl Versuche, Tippübersicht, Teilen.
- * Gibt eine Funktion zurück, die das Popup ohne `onClose` entfernt (beim Verlassen der Seite).
- */
-export function openResultDialog(options: ResultDialogOptions): () => void {
-  const { state, target, guesses, resorts, marked, onClose } = options;
-  const won = state.status === 'won';
-  const count = guesses.length;
-
-  const mapEl = h('div', { class: 'dialog-map' });
-  const closeButton = h('button', { class: 'icon-button dialog-close', type: 'button', 'aria-label': 'Close' }, closeIcon());
-  const shareButton = h('button', { class: 'button primary', type: 'button' }, 'Share result');
-  const shareStatus = h('p', { class: 'share-status', role: 'status' });
-
-  const summary = h(
+/** Eigene Tippfolge allein (ohne Challenge). */
+function summaryList(guesses: GuessResult[]): HTMLElement {
+  return h(
     'ol',
     { class: 'summary' },
     ...guesses.map(({ resort, comparison }) =>
@@ -64,10 +67,71 @@ export function openResultDialog(options: ResultDialogOptions): () => void {
       ),
     ),
   );
+}
+
+function versusCell(guess: GuessResult | undefined, index: number): HTMLElement {
+  if (!guess) return h('div', { class: 'versus-cell empty', 'aria-hidden': 'true' });
+  const { resort, comparison } = guess;
+  return h(
+    'div',
+    { class: `versus-cell ${comparison.correct ? 'correct' : 'wrong'}` },
+    h('span', { class: 'versus-name' }, h('span', { class: 'versus-index' }, `${index + 1}.`), ` ${resort.name}`),
+    h('span', { class: 'versus-distance' }, comparison.correct ? 'Correct' : formatKm(comparison.distanceKm)),
+  );
+}
+
+/** Beide Tippfolgen nebeneinander: Tipp 1 neben Tipp 1 usw. Wer weniger brauchte, ist grün markiert. */
+function versusTable(you: PlayerGuesses, challenger: PlayerGuesses): HTMLElement {
+  const winner = challengeWinner(
+    { won: you.won, guesses: you.guesses.length },
+    { won: challenger.won, guesses: challenger.guesses.length },
+  );
+  const head = (label: string, player: PlayerGuesses, isWinner: boolean) =>
+    h(
+      'div',
+      { class: `versus-head${isWinner ? ' winner' : ''}` },
+      h('span', { class: 'versus-label' }, label),
+      h('span', { class: 'versus-count' }, player.won ? guessesText(player.guesses.length) : 'Not solved'),
+    );
+  const cells: HTMLElement[] = [];
+  const rows = Math.max(you.guesses.length, challenger.guesses.length);
+  for (let i = 0; i < rows; i++) {
+    cells.push(versusCell(you.guesses[i], i), versusCell(challenger.guesses[i], i));
+  }
+  return h(
+    'div',
+    { class: 'versus', role: 'group', 'aria-label': 'Your guesses next to your challenger’s guesses' },
+    head('You', you, winner === 'you'),
+    head('Challenger', challenger, winner === 'challenger'),
+    ...cells,
+  );
+}
+
+/**
+ * End-Popup: Karte auf die Lösung gezoomt, Anzahl Versuche, Tippübersicht bzw. Vergleich
+ * mit dem Herausforderer, „Challenge a friend“.
+ * Gibt eine Funktion zurück, die das Popup ohne `onClose` entfernt (beim Verlassen der Seite).
+ */
+export function openResultDialog(options: ResultDialogOptions): () => void {
+  const { state, target, guesses, challenger, resorts, marked, onClose } = options;
+  const won = state.status === 'won';
+  const count = guesses.length;
+
+  const mapEl = h('div', { class: 'dialog-map' });
+  const closeButton = h('button', { class: 'icon-button dialog-close', type: 'button', 'aria-label': 'Close' }, closeIcon());
+  const challengeButton = h('button', { class: 'button primary', type: 'button' }, 'Challenge a friend');
+  const shareStatus = h('p', { class: 'share-status', role: 'status' });
 
   const attempts = won
     ? `Solved in ${count} of ${MAX_GUESSES} ${count === 1 ? 'guess' : 'guesses'}`
     : `Not solved · ${count} of ${MAX_GUESSES} guesses used`;
+
+  let details: HTMLElement[] = [];
+  if (challenger) {
+    details = [versusTable({ won, guesses }, challenger)];
+  } else if (count > 0) {
+    details = [summaryList(guesses)];
+  }
 
   const dialog = h(
     'dialog',
@@ -80,8 +144,8 @@ export function openResultDialog(options: ResultDialogOptions): () => void {
       h('h2', { id: 'result-title' }, won ? 'You found it!' : 'The resort was'),
       h('p', { class: 'result-resort' }, `${flagEmoji(target.country)} ${target.name}`),
       h('p', { class: 'result-attempts' }, attempts),
-      count > 0 ? summary : null,
-      h('div', { class: 'share' }, shareButton, shareStatus),
+      ...details,
+      h('div', { class: 'share' }, challengeButton, shareStatus),
     ),
   );
 
@@ -91,17 +155,12 @@ export function openResultDialog(options: ResultDialogOptions): () => void {
   const map = createResortMap(mapEl, { resorts, focus: target });
   map.setMarked(marked);
 
-  shareButton.addEventListener('click', async () => {
-    const text = shareText({
-      mode: state.mode,
-      date: state.date,
-      status: state.status,
-      comparisons: guesses.map((g) => g.comparison),
-      url: shareUrl(),
-    });
-    const result = await share(text);
+  challengeButton.addEventListener('click', async () => {
+    const challenge = challengeFromGame(state);
+    const url = challengeUrl(`${location.origin}${location.pathname}`, challenge);
+    const result = await shareLink(challengeMessage(challenge), url);
     shareStatus.textContent =
-      result === 'copied' ? 'Copied to clipboard' : result === 'failed' ? 'Could not share. Please try again.' : '';
+      result === 'copied' ? 'Link copied to clipboard' : result === 'failed' ? 'Could not share. Please try again.' : '';
   });
 
   closeButton.addEventListener('click', () => dialog.close());

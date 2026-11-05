@@ -1,4 +1,5 @@
 import type { Resort } from '../data/resort.ts';
+import type { Challenge } from '../logic/challenge.ts';
 import { compareResorts } from '../logic/compare.ts';
 import { MAX_GUESSES, revealResult, submitGuess, type GameState } from '../logic/game.ts';
 import { resolveInput } from '../logic/search.ts';
@@ -8,19 +9,23 @@ import { h } from './dom.ts';
 import { guessHeader, guessRow } from './guessRow.ts';
 import { submitIcon } from './icons.ts';
 import { createResortMap, type MarkedResort } from './map.ts';
-import { openResultDialog } from './resultDialog.ts';
+import { openResultDialog, type PlayerGuesses } from './resultDialog.ts';
 import { loadStreak, saveDailyGame, saveStreak } from './storage.ts';
 
 export interface GameViewOptions {
   state: GameState;
   resorts: readonly Resort[];
+  /** Challenge eines Freundes; der Vergleich erscheint im End-Popup. */
+  challenge?: Challenge | null;
+  /** Kurzer Hinweis über der Karte, z. B. bei einem abgelaufenen Challenge-Link */
+  notice?: string;
   /** Wird nach dem Schließen des End-Popups aufgerufen. */
   onExit: () => void;
 }
 
 /** Rundenansicht. Gibt eine Aufräumfunktion zurück. */
 export function renderGameView(root: HTMLElement, options: GameViewOptions): () => void {
-  const { resorts, onExit } = options;
+  const { resorts, onExit, challenge, notice } = options;
   let state = options.state;
   const byId = new Map(resorts.map((r) => [r.id, r]));
   const target = byId.get(state.targetId);
@@ -53,6 +58,7 @@ export function renderGameView(root: HTMLElement, options: GameViewOptions): () 
     h(
       'div',
       { class: 'game' },
+      notice ? h('p', { class: 'notice', role: 'status' }, notice) : null,
       mapEl,
       h('div', { class: 'guess-form' }, h('div', { class: 'input-wrap' }, input, suggestions), submitButton),
       message,
@@ -166,10 +172,21 @@ export function renderGameView(root: HTMLElement, options: GameViewOptions): () 
       state,
       target: target!,
       guesses: guessedResorts().map((resort) => ({ resort, comparison: compareResorts(resort, target!) })),
+      challenger: challengerGuesses(),
       resorts,
       marked: markedResorts(),
       onClose: onExit,
     });
+  }
+
+  /** Tippfolge des Herausforderers; nur wenn er dasselbe Gebiet gespielt hat. */
+  function challengerGuesses(): PlayerGuesses | null {
+    if (!challenge || challenge.targetId !== target!.id) return null;
+    const guesses = challenge.guesses
+      .map((id) => byId.get(id))
+      .filter((r): r is Resort => r !== undefined)
+      .map((resort) => ({ resort, comparison: compareResorts(resort, target!) }));
+    return { won: challenge.won, guesses };
   }
 
   let closeDialog: (() => void) | null = null;

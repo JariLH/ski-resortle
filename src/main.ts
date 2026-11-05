@@ -1,5 +1,6 @@
 import './style.css';
 import { RESORTS } from './data/resorts.ts';
+import { CHALLENGE_PARAM, decodeChallenge } from './logic/challenge.ts';
 import { dailyResort, randomResort } from './logic/daily.ts';
 import { berlinDateKey } from './logic/dates.ts';
 import { newGame } from './logic/game.ts';
@@ -7,7 +8,9 @@ import { displayedStreak } from './logic/streak.ts';
 import { h } from './ui/dom.ts';
 import { renderGameView } from './ui/gameView.ts';
 import { renderPlaceholderPage, renderStartView } from './ui/startView.ts';
-import { loadDailyGame, loadStreak } from './ui/storage.ts';
+import { loadDailyChallenge, loadDailyGame, loadStreak, saveDailyChallenge } from './ui/storage.ts';
+
+const EXPIRED_NOTICE = "This challenge has expired – here is today's Ski-Resortle";
 
 const app = document.querySelector<HTMLElement>('#app')!;
 const view = h('div', { class: 'view' });
@@ -43,18 +46,33 @@ function route(): void {
   cleanup?.();
   cleanup = null;
   const today = berlinDateKey(new Date());
-  const path = location.hash.replace(/^#/, '') || '/';
+  const [rawPath = '', query = ''] = location.hash.replace(/^#/, '').split('?');
+  const path = rawPath || '/';
   document.body.dataset.view = path.slice(1) || 'start';
+  // Challenge-Link: Daten übernehmen und aus der Adresse entfernen
+  const code = new URLSearchParams(query).get(CHALLENGE_PARAM);
+  const linkChallenge = code ? decodeChallenge(code) : null;
+  if (code) history.replaceState(null, '', `#${path}`);
 
   switch (path) {
     case '/play': {
+      let notice: string | undefined;
+      if (linkChallenge?.mode === 'daily') {
+        if (linkChallenge.date === today) saveDailyChallenge(linkChallenge);
+        else notice = EXPIRED_NOTICE;
+      }
       const state = loadDailyGame(today) ?? newGame('daily', today, dailyResort(RESORTS, today).id);
-      cleanup = renderGameView(view, { state, resorts: RESORTS, onExit: goHome });
+      const challenge = loadDailyChallenge(today);
+      cleanup = renderGameView(view, { state, resorts: RESORTS, challenge, notice, onExit: goHome });
       break;
     }
     case '/practice': {
-      const state = newGame('practice', today, randomResort(RESORTS).id);
-      cleanup = renderGameView(view, { state, resorts: RESORTS, onExit: goHome });
+      // Übungs-Challenge: dasselbe Gebiet wie der Herausforderer spielen
+      const challenge =
+        linkChallenge?.mode === 'practice' && RESORTS.some((r) => r.id === linkChallenge.targetId) ? linkChallenge : null;
+      const targetId = challenge?.targetId ?? randomResort(RESORTS).id;
+      const state = newGame('practice', today, targetId);
+      cleanup = renderGameView(view, { state, resorts: RESORTS, challenge, onExit: goHome });
       break;
     }
     case '/legal':

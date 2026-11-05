@@ -1,6 +1,6 @@
 import type { Resort } from '../data/resort.ts';
 import type { Comparison, Direction } from '../logic/compare.ts';
-import { flagEmoji, formatKm } from '../logic/share.ts';
+import { flagEmoji, formatKm } from '../logic/format.ts';
 import { h } from './dom.ts';
 import { arrowDownIcon, arrowUpIcon, checkIcon, peakIcon, verticalIcon } from './icons.ts';
 
