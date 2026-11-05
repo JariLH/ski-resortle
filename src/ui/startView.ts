@@ -13,7 +13,7 @@ export function renderStartView(root: HTMLElement, { streak }: StartViewOptions)
       h('h1', { class: 'logo' }, 'Ski-Resortle'),
       h('a', { class: 'button primary large', href: '#/play' }, "Play today's Ski-Resortle"),
       h('a', { class: 'button secondary', href: '#/practice' }, 'Practice'),
-      h('div', { class: 'streak' }, streakPanorama(streak), h('span', { class: 'streak-label' }, 'day streak')),
+      h('div', { class: 'streak' }, streakPanorama(streak), h('span', { class: 'streak-label' }, 'Daily Streak')),
     ),
   );
 }
