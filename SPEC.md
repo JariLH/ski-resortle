@@ -75,6 +75,7 @@ Orte und Teilgebiete werden als Aliase hinterlegt (z. B. „Lech“ → Ski Arlb
 - hintergrundfarbe sehr helles grau
 - viel whitespace (hellgrau), schlichtes design 
 - alle Elemente mit abgerundeten Ecken (Apple design language)
+- Buttons (Play today's Ski-Resortle, Practice, Show result, Challenge a friend, Back) sind Rechtecke mit leicht abgerundeten Ecken, keine Pillenform; gleicher Radius (14px) wie Eingabezeile, Absenden-Button und Tabellenzeilen
 
 ### Startseite
 
