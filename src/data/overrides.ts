@@ -70,6 +70,68 @@ export const OVERRIDES: Overrides = {
       'c75c6ca036981ab96a6547398e30e705a9e30809',
       '3bfbf3fc95f82938cf30b2e4dcb3ffa5e5c0287c',
     ],
+    // Manuelle Prüfung vom 2026-11-06 (ABGRENZUNG-REVIEW-2.md): getrennt erfasste Teile eines Netzes
+    // Via Lattea: Sestriere + Sansicario + Sauze d'Oulx + Claviere + Montgenèvre
+    '35a6ed0e1f5424feddcbc15b62e84b1b97f07624': [
+      'bd7b3458f542e69b67d1aadb4d474ffe5f5aa157',
+      'a82f34f376325886d7e9645f44a5f0e20084e78f',
+      '5c965369d0727ccd79ab98ae91909542a33c7fe6',
+      'b1a655113e872a26a397061747cc833b8a6932b2',
+    ],
+    // Campiglio Dolomiti di Brenta: Madonna di Campiglio + Pinzolo + Folgarida-Marilleva
+    fd830ae87b04dcc7ab252d9b7f21cb21029dd61f: ['6bce0c5b4378d80172a8f1e44252244e65530be2', '29b30f99e12f6399919a7bbd34ab3ad948bf6ede'],
+    '064c258440982ec02bbffeb24ad3acffc7fa5ef0': ['f8176e48416adcfc9118014d5c390cd2099a6a18'], // La Thuile + La Rosière
+    fa7bea0bfe372c06b3cccc3e8113949837d688fb: ['86d9955c744d7672adf80944769b57a90fcbefec'], // Palisades Tahoe Olympic Valley + Alpine Meadows
+    // Tres Valles: El Colorado + Farellones + Valle Nevado + La Parva
+    '35632469fb7cccf46b30c15b9f1758f7dff918ac': [
+      '3f8b2f49c933d28c5bd9d73d91ffc60950aa1697',
+      '5599f5c55105bf3996fec9a4e6f309e1a79e421d',
+      '82dc09affb379bc9f88a1fc518ac2ded2508f9da',
+    ],
+    // Rosa Khutor + Gazprom + Alpika (Krasnaja Poljana)
+    '246c066d501b55857937068a8ddc67866edd0aa8': ['d4c30482dd7589be58b5597546bab89f29722bc2', '13d149d99871da1a68d9c327c075c67f7c5677d3'],
+    // Mondolè Ski: Artesina + Prato Nevoso + Frabosa Soprana
+    f7dc751e2a702b78afc47b42214106bc336a0f97: ['ccb7145d7125b02dbb3b398a13c29ba9c2392b9f', '355784fa59846ad33382490c4fcf63f1756d10db'],
+    bb224ef16ede59ec7a913d61dd9dc6dc2cf43fe6: ['2ebc70b8e0472c1559c589bd6e92088934821b93'], // Cimone + Le Polle
+    '03fcc0299c9030bf81bf077f9a94ee0b327040d9': ['6eebeff16c8b480fc1335c8bed596286706cb776'], // Masella + La Molina (Alp 2500)
+    bcdeff232b7a427105725de80f1c6759384c0b83: ['3cc92c542dacc256e6b2eb5d8e8249d1dce4479b'], // Klínovec + Boží Dar
+    '0bd87c732c1cffdf2ef8743e9b73c520a67e6bf4': ['f5a337e7d6c0c1fbcb7e18fcc9c27da5384917fb'], // Špindlerův Mlýn: Medvědín + Svatý Petr
+    // Japan
+    c841118d2b5eed99ac5e30f569bb0f2e6ba7892a: ['6d8c8a9a4114428e603d1c434b147d1217879f85'], // Hakuba Goryu + Hakuba 47
+    '9e9a84ef97c366ed523b405845fa42051c9d578d': ['b602362c1e045f1cdc1c5aa731c1ee2224205518'], // Hakuba Norikura Onsen + Hakuba Cortina
+    b6c5382952620aebf1455b847b783e08c7ede07c: ['b52fb4c57b8bf60807a261fbf926d460f4244598'], // Akakura Onsen + Akakura Kanko
+    b7e060a1861cfe2b1eadc171cebdc5d145178d5b: ['b40167efeebd592f37e43e04e3f823a650cfbc9c'], // Madarao Kogen + Tangram
+    // Yuzawa Snow Link: Ishiuchi Maruyama + Gala Yuzawa + Yuzawa Kogen
+    b9b1aa3f77c754adc69b9be785191b0d3f9b58f6: ['7a28843429d0a4a1185a15bbd3c6a98d2547e856', 'e0debe67628e6b9f62fea0bcfb51c2757e1cc717'],
+    // Mt. Naeba: Naeba + Tashiro + Kagura + Mitsumata (Dragondola)
+    '5426b57377f8351750f77011e858ee74328d8c3a': [
+      '597dbaa740f972dc33479c59f94f0df5c8710f74',
+      '9be8e301b09a2e9a070ce29bb11255f0cc940ab6',
+      '7d458cc0942ef5cacbbfd10ad78043dc40258452',
+    ],
+    '5df8750eb6e59ec9d20563f0342933ad3764ae6c': ['83b57c5a3dd0b8106ee823e96dc5645378580d2d'], // Hachi Kogen + Hachi Kita
+    '323af836e78ff3f811fa43a5de343e67c998f576': ['ad3bc44d99f395ecf777763169d4926de3e0b76e'], // Washigatake + WhitePIA Takasu
+    '37743c0eb90f720f91c5b52ca96a60ad4e6fa4f0': ['4ee3f352a5b853868ea8270abd9c5f9643f15b5a'], // Dynaland + Takasu Snow Park
+    '8b0fb3febc7118982235ec4d0e028ccb500f2a65': ['4a46b3a56bdf146a2e465407165fa2a9039c886b'], // Sugadaira Taro + Davos Hill
+    '0ebf81b058d47e730773ab8385529520bd35da87': ['cb23e2679d722d6411b1d93cb7f64bd24b6ed669'], // Makinoiri Kogen + The Cupid of Romance
+    '6e603305e60b3be0b43a4ec59b3502e7c0dcac33': ['29f4f90cf65f355ffd3042ececd70bfe515a6d88'], // Sky Valley + Hyper Bowl Tohachi
+    // Shiga Kogen: zusammenhängendes Hauptnetz von Okushiga bis Sun Valley (ohne Yokoteyama, Shibutoge, Kumanoyu)
+    '894ab14e1896c260cde7bd239cd48a966ee62c7a': [
+      '302846b0be3ec72b7c818f64720065e8adb00ef6', // Okushiga Kogen
+      '46dace158e39e52c5689e9898b2ac36db18cd95a', // Ichinose Diamond
+      '956c33e76089572ee7dfbfb95182522955b97b2e', // Ichinose Yamanokami
+      '973e1ccde21c849f93f2019d4c62499cc22bbcc6', // Ichinose Family
+      '87b83d283c0beea90439513eba3cdcd2d4915dab', // Terakoya
+      '8e31aee75b110393623f8eadd647738177f144fe', // Tannenomori Okojo
+      '490be64d20f03ec50f2f274129ae0509349213bf', // Higashidateyama
+      'fed642dff38044b0620cc442015a1bd7c5ea68a9', // Hoppo Bunadaira
+      '6da2b2a987966fa1d46460469cc1bd0c446c6c86', // Takamagahara Mammoth
+      '9bb5e653c4902a84ee6d9050fdf22a806f0c4547', // Nishidateyama
+      'f62b32b55ca87616e0acb32bb104c5488578cf52', // Giant
+      'ea53f7cb40be5c60de1b243daaa40b47e198a894', // Maruike
+      '0b454312d4e0b89d39497313ba74c9a39587b6b3', // Hasuike
+      'bf9a13164e4fbfd165bf8e040bce0cdd1d1d3c48', // Sun Valley
+    ],
   },
   keepSeparate: [],
   dropLifts: {
@@ -146,9 +208,33 @@ export const OVERRIDES: Overrides = {
     b0474b173deabca7cc8c3b5e9070b881220db472: 'Kolašin 1450', // Kolašin 1450 ski resort
     '7271a35a016b0c4f937677edc5b7a71f64ea1b36': 'Las Araucarias', // Las Araucarias (Formerly Llaima)
     f9beaf4e37ef88b422b9ee4aa2ae9224f10afd02: 'St. Moritz – Corviglia', // Corviglia
-    fd830ae87b04dcc7ab252d9b7f21cb21029dd61f: 'Madonna di Campiglio', // Campiglio Dolomiti di Brenta
+    fd830ae87b04dcc7ab252d9b7f21cb21029dd61f: 'Campiglio Dolomiti di Brenta',
     fb20868f99b43dbfe8cf7195c47619680ac21f37: 'See im Paznaun', // See
     b120c998e46941d19e34ac55c2a4d9332c2462a0: 'Tawatinaw Valley', // Tawaitnaw Cross Country Ski Trails (Tippfehler, Skihügel mit T-Bügeln)
+    // Zusammengelegte Netze (ABGRENZUNG-REVIEW-2.md); ohne gängigen Netznamen „Teil A – Teil B“
+    '35a6ed0e1f5424feddcbc15b62e84b1b97f07624': 'Via Lattea',
+    '064c258440982ec02bbffeb24ad3acffc7fa5ef0': 'Espace San Bernardo',
+    fa7bea0bfe372c06b3cccc3e8113949837d688fb: 'Palisades Tahoe',
+    '35632469fb7cccf46b30c15b9f1758f7dff918ac': 'Tres Valles',
+    // nicht „Krasnaya Polyana“: so heißt das Nachbargebiet Krasnaya Polyana Resort (Gornaja Karusel)
+    '246c066d501b55857937068a8ddc67866edd0aa8': 'Rosa Khutor – Gazprom',
+    f7dc751e2a702b78afc47b42214106bc336a0f97: 'Mondolè Ski',
+    bb224ef16ede59ec7a913d61dd9dc6dc2cf43fe6: 'Monte Cimone',
+    '03fcc0299c9030bf81bf077f9a94ee0b327040d9': 'Alp 2500',
+    '0bd87c732c1cffdf2ef8743e9b73c520a67e6bf4': 'Špindlerův Mlýn',
+    c841118d2b5eed99ac5e30f569bb0f2e6ba7892a: 'Hakuba Goryu – Hakuba 47',
+    '9e9a84ef97c366ed523b405845fa42051c9d578d': 'Hakuba Cortina – Hakuba Norikura',
+    b6c5382952620aebf1455b847b783e08c7ede07c: 'Akakura Onsen – Akakura Kanko',
+    b7e060a1861cfe2b1eadc171cebdc5d145178d5b: 'Madarao Kogen – Tangram',
+    b9b1aa3f77c754adc69b9be785191b0d3f9b58f6: 'Yuzawa Snow Link',
+    '5426b57377f8351750f77011e858ee74328d8c3a': 'Mt. Naeba',
+    '5df8750eb6e59ec9d20563f0342933ad3764ae6c': 'Hachi Kogen – Hachi Kita',
+    '323af836e78ff3f811fa43a5de343e67c998f576': 'Washitopia',
+    '37743c0eb90f720f91c5b52ca96a60ad4e6fa4f0': 'Takasu Snow Park – Dynaland',
+    '8b0fb3febc7118982235ec4d0e028ccb500f2a65': 'Sugadaira Taro – Davos',
+    '0ebf81b058d47e730773ab8385529520bd35da87': 'Makinoiri Kogen – The Cupid of Romance',
+    '6e603305e60b3be0b43a4ec59b3502e7c0dcac33': 'Hyper Bowl Tohachi – Sky Valley',
+    '894ab14e1896c260cde7bd239cd48a966ee62c7a': 'Shiga Kogen',
   },
   aliases: {
     '53410fc611922a26e32535c74bb1d9364cef4ecd': ['Lech', 'Zürs', 'St. Anton am Arlberg', 'St. Christoph', 'Stuben', 'Warth', 'Schröcken'],
@@ -203,6 +289,31 @@ export const OVERRIDES: Overrides = {
     '5ffd86e2374dc98261a846de36bfc510ab758dfc': ['Champoluc', 'Gressoney-La-Trinité', 'Gressoney', 'Alagna Valsesia', 'Alagna'],
     '0e7ba1fd10a2afbc6e188d1f9936f843cc665583': ['Mayrhofen', 'Penken', 'Horberg'],
     b120c998e46941d19e34ac55c2a4d9332c2462a0: ['Tawatinaw', 'Athabasca'],
+    // Zusammengelegte Netze: die Namen der Teile werden automatisch Aliase, hier nur zusätzliche
+    '35a6ed0e1f5424feddcbc15b62e84b1b97f07624': ['Vialattea', 'Milky Way', "Sauze d'Oulx", 'Cesana'],
+    fd830ae87b04dcc7ab252d9b7f21cb21029dd61f: ['Madonna di Campiglio', 'Campiglio', 'Folgarida', 'Marilleva'],
+    '064c258440982ec02bbffeb24ad3acffc7fa5ef0': ['La Thuile', 'San Bernardo'],
+    fa7bea0bfe372c06b3cccc3e8113949837d688fb: ['Olympic Valley', 'Alpine Meadows', 'Squaw Valley'],
+    '35632469fb7cccf46b30c15b9f1758f7dff918ac': ['Los Tres Valles de los Andes', 'Tres Valles de los Andes'],
+    '246c066d501b55857937068a8ddc67866edd0aa8': ['Gazprom Mountain Resort', 'Laura'],
+    f7dc751e2a702b78afc47b42214106bc336a0f97: ['Mondolè'],
+    bb224ef16ede59ec7a913d61dd9dc6dc2cf43fe6: ['Comprensorio del Cimone', 'Le Polle'],
+    '03fcc0299c9030bf81bf077f9a94ee0b327040d9': ['Alp2500'],
+    bcdeff232b7a427105725de80f1c6759384c0b83: ['Klínovec'],
+    '0bd87c732c1cffdf2ef8743e9b73c520a67e6bf4': ['Medvědín', 'Svatý Petr', 'Špindl'],
+    c841118d2b5eed99ac5e30f569bb0f2e6ba7892a: ['Hakuba Goryu', 'Hakuba 47', 'Goryu'],
+    '9e9a84ef97c366ed523b405845fa42051c9d578d': ['Hakuba Cortina', 'Hakuba Norikura', 'Norikura'],
+    b6c5382952620aebf1455b847b783e08c7ede07c: ['Akakura Onsen', 'Akakura Kanko', 'Akakura'],
+    b7e060a1861cfe2b1eadc171cebdc5d145178d5b: ['Madarao Kogen', 'Madarao', 'Tangram Madarao', 'Tangram'],
+    b9b1aa3f77c754adc69b9be785191b0d3f9b58f6: ['Gala Yuzawa', 'Ishiuchi Maruyama', 'Yuzawa Kogen'],
+    '5426b57377f8351750f77011e858ee74328d8c3a': ['Naeba', 'Kagura', 'Tashiro', 'Mitsumata'],
+    '5df8750eb6e59ec9d20563f0342933ad3764ae6c': ['Hachi Kogen', 'Hachi Kita'],
+    '323af836e78ff3f811fa43a5de343e67c998f576': ['Washigatake', 'WhitePIA Takasu'],
+    '37743c0eb90f720f91c5b52ca96a60ad4e6fa4f0': ['Takasu Snow Park', 'Dynaland'],
+    '8b0fb3febc7118982235ec4d0e028ccb500f2a65': ['Sugadaira Taro', 'Sugadaira Davos Hill', 'Davos Hill'],
+    '0ebf81b058d47e730773ab8385529520bd35da87': ['Makinoiri Kogen', 'The Cupid of Romance', 'Snow Resort Romance no Kamisama', 'Kijimadaira'],
+    '6e603305e60b3be0b43a4ec59b3502e7c0dcac33': ['Hyper Bowl Tohachi', 'Sky Valley'],
+    '894ab14e1896c260cde7bd239cd48a966ee62c7a': ['志賀高原', 'Okushiga Kogen', 'Yakebitaiyama', 'Ichinose', 'Takamagahara', 'Nishidateyama', 'Higashidateyama'],
   },
   dropAliases: {
     b7cad93e857de92335debf15f4d0bfe9a04f4d1b: ['Ski de fond Mont-Tremblant'],
