@@ -155,6 +155,8 @@ export function createResortMap(container: HTMLElement, options: ResortMapOption
       pendingFit = targets;
       return;
     }
+    // Die Karte kann gerade geschrumpft sein (neue Tabellenzeile); ohne resize passt der Ausschnitt nicht.
+    map.resize();
     if (targets.length === 1) {
       const [only] = targets;
       map.easeTo({ center: [only!.lon, only!.lat], zoom: Math.max(map.getZoom(), 4), animate });

@@ -101,6 +101,7 @@ Orte und Teilgebiete werden als Aliase hinterlegt (z. B. „Lech“ → Ski Arlb
 - über der obersten Zeile steht eine Kopfzeile mit den Kategorien: Resort | Distance | Country | Slopes | Lifts | Highest Point | Elevation Gain (erscheint ab dem ersten Tipp; die Zellen behalten ihre kleinen Beschriftungen/Icons). Auf dem Handy steht Distance rechts neben dem Namen
 - die "Tabelle besteht hat keine Trennlinien, jede Zeile ist ein "Feld" in weiß, dazwischen ist etwas Platz
 - gibt man einen neuen Tipp ab, wird die "Tabelle" um eine Zeile erweitert
+- Karte, Eingabezeile und "Tabelle" passen zusammen auf den Bildschirm: die "Tabelle" scrollt in sich (Kopfzeile bleibt stehen) und scrollt nach jedem Tipp automatisch nach unten zum neuesten Tipp; auf dem Handy ist die Karte dafür etwas kleiner
 - ganz unten Button "show result", dann zeigt es die Lösung und das Raten ist beendet
 - wenn es richtig erraten wurde popup mit oben Groß die Karte herangezoomt aufs richtige Resort, unter der Karte Anzahl versuche und Zusammenfassung der abgegebenen Tipps, im popout außerdem der Button "Challenge a friend" (siehe unten); klickt man das popup weg kommt man wieder auf die Startseite
 

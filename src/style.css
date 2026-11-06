@@ -200,10 +200,22 @@ a {
   text-align: center;
 }
 
-/* Runde */
+/* Runde: füllt genau den Bildschirm, damit Karte, Eingabe und neueste Tipps zusammen sichtbar sind.
+   Die Tabelle scrollt in sich; die Fußzeile liegt darunter. Auf sehr kleinen Bildschirmen scrollt die Seite. */
 .game {
   display: flex;
   flex-direction: column;
+  height: calc(100dvh - max(24px, env(safe-area-inset-top)) - max(16px, env(safe-area-inset-bottom)));
+  min-height: 560px;
+}
+
+.game > * {
+  flex: none;
+}
+
+/* Wird es eng, gibt die Karte Platz ab, damit Kopfzeile und neuester Tipp ganz zu sehen sind */
+.game > .game-map {
+  flex: 0 1 auto;
 }
 
 .notice {
@@ -317,12 +329,30 @@ a {
   color: var(--text);
 }
 
-/* Tipp-Tabelle: keine Trennlinien, jede Zeile ein weißes Feld */
+/* Tipp-Tabelle: keine Trennlinien, jede Zeile ein weißes Feld.
+   Nimmt den restlichen Platz ein und scrollt; seitlicher Innenabstand, damit die Schatten nicht abgeschnitten werden. */
+.game > .guess-table {
+  flex: 1 1 0;
+}
+
 .guess-table {
   display: flex;
   flex-direction: column;
   gap: 10px;
-  margin-top: 16px;
+  min-height: 0;
+  margin: 16px -6px 0;
+  padding: 0 6px 8px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.guess-table > * {
+  flex: none;
+}
+
+/* Platz für Kopfzeile und einen ganzen Tipp (auch mit zweizeiligem Namen) */
+.guess-table:has(.guess-row) {
+  min-height: 150px;
 }
 
 /* Kopfzeile und Tipp-Zeilen teilen sich dasselbe Raster */
@@ -343,8 +373,14 @@ a {
 }
 
 .guess-header {
+  /* bleibt beim Scrollen stehen und verdeckt die Zeilen darunter samt Abstand */
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  margin-bottom: -10px;
   padding-top: 0;
-  padding-bottom: 0;
+  padding-bottom: 10px;
+  background: var(--bg);
   color: var(--muted);
   font-size: 0.72rem;
   font-weight: 600;
@@ -438,7 +474,7 @@ a {
 
 .show-result {
   align-self: center;
-  margin-top: 32px;
+  margin-top: 16px;
 }
 
 /* Handy: Name und Entfernung über den Attributen */
@@ -455,8 +491,22 @@ a {
 
   .guess-header {
     padding-top: 0;
-    padding-bottom: 0;
+    padding-bottom: 10px;
     font-size: 0.66rem;
+  }
+
+  /* kleinere Karte, damit unter der Eingabe Platz für die Tipps bleibt */
+  .game-map {
+    height: 40vh;
+    min-height: 180px;
+  }
+
+  .guess-table:has(.guess-row) {
+    min-height: 200px;
+  }
+
+  .guess-form {
+    margin-top: 16px;
   }
 
   .guess-name,

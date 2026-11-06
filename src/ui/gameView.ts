@@ -106,9 +106,11 @@ export function renderGameView(root: HTMLElement, options: GameViewOptions): () 
     input.placeholder = playing ? `Guess ${state.guesses.length + 1} of ${MAX_GUESSES}` : 'Round finished';
   }
 
-  function appendRow(resort: Resort): void {
+  /** Neue Zeile unten anhängen und dorthin scrollen, damit der neueste Tipp sichtbar ist. */
+  function appendRow(resort: Resort, behavior: ScrollBehavior = 'smooth'): void {
     header.hidden = false;
     table.append(guessRow(resort, compareResorts(resort, target!)));
+    table.scrollTo({ top: table.scrollHeight, behavior });
   }
 
   function submit(): void {
@@ -192,7 +194,7 @@ export function renderGameView(root: HTMLElement, options: GameViewOptions): () 
   let closeDialog: (() => void) | null = null;
 
   // Gespeicherte Runde wiederherstellen.
-  for (const resort of guessedResorts()) appendRow(resort);
+  for (const resort of guessedResorts()) appendRow(resort, 'instant');
   updateControls();
   map.setMarked(markedResorts());
   if (state.guesses.length > 0) map.fitTo(guessedResorts());
