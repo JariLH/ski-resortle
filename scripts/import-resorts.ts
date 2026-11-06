@@ -2,8 +2,11 @@
 // Aufruf: `npm run import-data` (lädt die Exporte nach data-raw/, falls sie fehlen)
 //         `npm run import-data -- --download` (Exporte neu laden)
 // Läuft direkt mit Node (Type Stripping), daher nur Node-Bordmittel und keine Typprüfung durch tsc.
-import { existsSync, mkdirSync, readFileSync, statSync, writeFileSync } from 'node:fs';
-import { buildResorts, countriesByLift, liftsByArea, parseArea } from '../src/data/import/transform.ts';
+import { createReadStream, createWriteStream, existsSync, mkdirSync, readFileSync, renameSync, statSync, writeFileSync } from 'node:fs';
+import { createInterface } from 'node:readline';
+import { Readable } from 'node:stream';
+import { pipeline } from 'node:stream/promises';
+import { buildResorts, carveAreas, countriesByLift, liftsByArea, parseArea } from '../src/data/import/transform.ts';
 import { OVERRIDES } from '../src/data/overrides.ts';
 
 const BASE_URL = 'https://tiles.openskimap.org/geojson';
@@ -18,20 +21,44 @@ async function ensureFile(name, forceDownload) {
     const response = await fetch(`${BASE_URL}/${name}`);
     if (!response.ok) throw new Error(`Download fehlgeschlagen: ${response.status} ${response.statusText}`);
     mkdirSync(RAW_DIR, { recursive: true });
-    writeFileSync(path, Buffer.from(await response.arrayBuffer()));
+    // Als Stream speichern: runs.geojson ist entpackt über 800 MB
+    await pipeline(Readable.fromWeb(response.body), createWriteStream(`${path}.part`));
+    renameSync(`${path}.part`, path);
   }
   return path;
+}
+
+/**
+ * Pisten der angegebenen Gebiete. Die Datei ist zu groß für einen String, aber jedes Feature
+ * steht in einer eigenen Zeile; Zeilen ohne eine der IDs werden gar nicht erst geparst.
+ */
+async function readRuns(path, areaIds) {
+  const runs = [];
+  for await (const line of createInterface({ input: createReadStream(path) })) {
+    if (!areaIds.some((id) => line.includes(id))) continue;
+    const feature = JSON.parse(line.trim().replace(/,$/, ''));
+    if (feature.properties.skiAreas.some((a) => areaIds.includes(a.properties.id))) runs.push(feature);
+  }
+  return runs;
 }
 
 const forceDownload = process.argv.includes('--download');
 const areasPath = await ensureFile('ski_areas.geojson', forceDownload);
 const liftsPath = await ensureFile('lifts.geojson', forceDownload);
+const runsPath = await ensureFile('runs.geojson', forceDownload);
 
 const areaFeatures = JSON.parse(readFileSync(areasPath, 'utf8')).features;
 const liftFeatures = JSON.parse(readFileSync(liftsPath, 'utf8')).features;
 const liftIndex = liftsByArea(liftFeatures);
 const liftCountries = countriesByLift(liftFeatures);
-const areas = areaFeatures.map((f) => parseArea(f, liftIndex, liftCountries));
+const runFeatures = await readRuns(runsPath, OVERRIDES.carve.map((c) => c.from));
+const areas = carveAreas(
+  areaFeatures.map((f) => parseArea(f, liftIndex, liftCountries)),
+  OVERRIDES.carve,
+  liftFeatures,
+  runFeatures,
+  liftCountries,
+);
 const { resorts, report } = buildResorts(areas, OVERRIDES);
 
 const ids = new Set(resorts.map((r) => r.id));

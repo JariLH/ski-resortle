@@ -141,6 +141,7 @@
   {"id":"125d0233","name":"Estació d'Esquí Baqueira-Beret","aliases":[],"countries":["ES"],"lat":42.697,"lon":0.968,"pisteKm":154,"lifts":29,"topElevation":2600,"verticalDrop":1127},
   {"id":"125edf15","name":"Sugar Mountain Resort","aliases":[],"countries":["US"],"lat":36.127,"lon":-81.867,"pisteKm":8,"lifts":7,"topElevation":1595,"verticalDrop":358},
   {"id":"12680fc9","name":"Roccaraso - Rivisondoli","aliases":[],"countries":["IT"],"lat":41.832,"lon":14.021,"pisteKm":67,"lifts":24,"topElevation":2130,"verticalDrop":842},
+  {"id":"1281a752","name":"Haunold","aliases":["Baranci","Monte Baranci"],"countries":["IT"],"lat":46.722,"lon":12.277,"pisteKm":7,"lifts":5,"topElevation":1624,"verticalDrop":448},
   {"id":"12914dfe","name":"Sunrise Park Resort","aliases":[],"countries":["US"],"lat":33.956,"lon":-109.568,"pisteKm":42,"lifts":7,"topElevation":3329,"verticalDrop":477},
   {"id":"13756027","name":"Corvatsch-Furtschellas","aliases":[],"countries":["CH"],"lat":46.566,"lon":9.915,"pisteKm":40,"lifts":15,"topElevation":3297,"verticalDrop":1523},
   {"id":"13b3d7f0","name":"Schweitzer Mountain Resort","aliases":[],"countries":["US"],"lat":48.373,"lon":-116.618,"pisteKm":74,"lifts":9,"topElevation":1949,"verticalDrop":728},

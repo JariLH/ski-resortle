@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import {
   buildResorts,
+  carveAreas,
   countriesByLift,
   countriesOf,
   countriesOfLifts,
@@ -9,6 +10,7 @@ import {
   pickName,
   type Area,
   type OsdLiftFeature,
+  type OsdRunFeature,
   type OsdSkiAreaFeature,
   type Overrides,
 } from './transform.ts';
@@ -22,6 +24,7 @@ const NO_OVERRIDES: Overrides = {
   aliases: {},
   dropAliases: {},
   countries: {},
+  carve: [],
 };
 
 function lifts(prefix: string, count: number): Set<string> {
@@ -135,6 +138,54 @@ describe('Länder aus Liftstandorten', () => {
 
   it('nimmt die Orte des Gebiets, wenn kein Lift ein Land hat', () => {
     expect(countriesOfLifts(['l1'], new Map(), [{ iso3166_1Alpha2: 'CH' }])).toEqual(['CH']);
+  });
+});
+
+describe('carveAreas', () => {
+  // Hauptberg bei 11,0° O, ein eigener kleiner Berg 8 km östlich bei 11,1° O; beides in einem Eintrag
+  const line = (id: string, coords: number[][]): OsdLiftFeature => ({
+    properties: { id, status: 'operating', liftType: 'chair_lift', name: id, skiAreas: [{ properties: { id: 'big' } }] },
+    geometry: { type: 'LineString', coordinates: coords },
+  });
+  const run = (id: string, type: string, coordinates: unknown, uses = ['downhill']): OsdRunFeature => ({
+    properties: { id, uses, skiAreas: [{ properties: { id: 'big' } }] },
+    geometry: { type, coordinates },
+  });
+  const liftFeatures = [
+    line('m1', [[11.0, 47.0, 1000], [11.0, 47.01, 1500]]),
+    line('m2', [[11.002, 47.0, 1000], [11.002, 47.01, 1500]]),
+    line('h1', [[11.1, 47.0, 1200], [11.1, 47.005, 1400]]),
+    line('h2', [[11.102, 47.0, 1200], [11.102, 47.004, 1350]]),
+    line('h3', [[11.104, 47.0, 1210], [11.104, 47.003, 1300]]),
+  ];
+  const runs = [
+    run('am Hauptberg', 'LineString', [[11.0005, 47.01, 1500], [11.0005, 47.0, 990]]),
+    // 0,005° Breite ≈ 0,556 km; endet tiefer als die Talstation
+    run('am kleinen Berg', 'LineString', [[11.1005, 47.005, 1400], [11.1005, 47.0, 1190]]),
+    run('Pistenfläche', 'Polygon', [[[11.102, 47.001, 1250], [11.103, 47.001, 1250], [11.103, 47.002, 1260], [11.102, 47.001, 1250]]]),
+    run('Loipe', 'LineString', [[11.1, 47.0], [11.1, 47.1]], ['nordic']),
+  ];
+  const big = area({ id: 'big', pisteKm: 10, liftIds: new Set(['m1', 'm2', 'h1', 'h2', 'h3']), maxElevation: 1500, minElevation: 990 });
+  const liftCountries = new Map([['h1', ['IT']], ['h2', ['IT']], ['h3', ['IT']]]);
+  const carve = { from: 'big', name: 'Kleiner Berg, Piccolo', lifts: ['h3', 'h1', 'h2'] };
+
+  it('bildet ein Gebiet aus Liften und den Pisten, die ihnen am nächsten liegen', () => {
+    const [rest, small] = carveAreas([big], [carve], liftFeatures, runs, liftCountries);
+    expect(small).toMatchObject({ id: 'h1', rawName: 'Kleiner Berg, Piccolo', countries: ['IT'], region: 'Tyrol', maxElevation: 1400, minElevation: 1190 });
+    expect([...small!.liftIds]).toEqual(['h3', 'h1', 'h2']);
+    expect(small!.pisteKm).toBeCloseTo(0.556, 3);
+    expect(small!.lat).toBeCloseTo(47.0025);
+    expect(small!.lon).toBeCloseTo(11.102);
+    expect([...rest!.liftIds]).toEqual(['m1', 'm2']);
+    expect(rest!.pisteKm).toBeCloseTo(10 - 0.556, 3);
+  });
+
+  it('meldet Lifte, die nicht zum Eintrag gehören', () => {
+    expect(() => carveAreas([big], [{ ...carve, lifts: ['h1', 'x'] }], liftFeatures, runs, liftCountries)).toThrow('Lift x');
+  });
+
+  it('lässt die Gebiete ohne Einträge unverändert', () => {
+    expect(carveAreas([big], [], liftFeatures, runs, liftCountries)).toEqual([big]);
   });
 });
 

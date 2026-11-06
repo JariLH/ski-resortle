@@ -44,7 +44,7 @@ Unter der Karte zeigt jeder Tipp Attribute mit richtig/falsch bzw. höher/niedri
 - Höchster Punkt: höchster Punkt von Pisten und Liften; Höhendifferenz: höchster minus tiefster Punkt von Pisten und Liften
 - Länder eines Gebiets: die Länder, in denen seine Lifte stehen (ein Lift über die Grenze zählt für beide), sortiert nach Anzahl der Lifte. Ausnahmen in der Korrekturliste, z. B. wenn Pisten über die Grenze führen, aber alle Lifte auf einer Seite stehen
 - Grenzüberschreitende Gebiete haben mehrere Länder; die Land-Zelle ist grün, wenn Tipp und Lösung mindestens ein Land gemeinsam haben
-- Abgrenzung: Gebiete aus OpenSkiData werden übernommen, eine handgepflegte Korrekturliste schließt Verbünde und Fehleinträge aus, legt Teilgebiete zusammen und setzt Namen und Aliase
+- Abgrenzung: Gebiete aus OpenSkiData werden übernommen, eine handgepflegte Korrekturliste schließt Verbünde und Fehleinträge aus, legt Teilgebiete zusammen und setzt Namen und Aliase. Gebiete, die OpenSkiData nur als Teil eines größeren Eintrags führt, bildet sie aus ihren Liften; eine Piste gehört dabei zum nächstgelegenen Lift
 - Der Datensatz wird als Stand (Snapshot) eingecheckt, nicht bei jedem Deploy neu geladen
 
 ### Was zählt als ein Skigebiet

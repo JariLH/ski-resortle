@@ -46,6 +46,15 @@ export interface OsdLiftFeature {
   geometry?: { type: string; coordinates: unknown } | null;
 }
 
+export interface OsdRunFeature {
+  properties: {
+    id: string;
+    uses: string[];
+    skiAreas: { properties: { id: string } }[];
+  };
+  geometry: { type: string; coordinates: unknown };
+}
+
 // ---------------------------------------------------------------------------
 // Regeln aus SPEC.md
 
@@ -76,6 +85,17 @@ export interface Overrides {
   dropAliases: Record<string, string[]>;
   /** Länder, wenn die Liftstandorte nicht reichen (z. B. Pisten über die Grenze, alle Lifte auf einer Seite). */
   countries: Record<string, string[]>;
+  /** Gebiete, die OpenSkiData nur als Teil eines größeren Eintrags führt (siehe carveAreas). */
+  carve: CarvedArea[];
+}
+
+export interface CarvedArea {
+  /** OpenSkiData-ID des Eintrags, der die Lifte enthält */
+  from: string;
+  /** Name, weitere Varianten mit Komma getrennt wie in OpenSkiData; die weiteren werden Aliase */
+  name: string;
+  /** Lift-IDs, bei zerstückelten Liften die kleinste Abschnitts-ID */
+  lifts: string[];
 }
 
 // ---------------------------------------------------------------------------
@@ -208,6 +228,151 @@ function endpoints(geometry: OsdLiftFeature['geometry']): [string, string] | nul
   if (!first || !last || coords.length < 2) return null;
   const key = (c: number[]): string => `${c[0]?.toFixed(5)},${c[1]?.toFixed(5)}`;
   return [key(first), key(last)];
+}
+
+// ---------------------------------------------------------------------------
+// Gebiete aus Liften eines größeren Eintrags bilden
+
+type Coord = number[];
+
+/**
+ * Bildet Gebiete, die OpenSkiData nur als Teil eines größeren Eintrags führt, aus ihren Liften.
+ * Jede Alpin-Piste des Eintrags gehört zum Lift, der ihr am nächsten liegt; Pisten an den
+ * herausgelösten Liften zählen zum neuen Gebiet. Der Eintrag verliert diese Lifte und Pisten-km
+ * (seine Höhen bleiben). ID des neuen Gebiets ist die kleinste seiner Lift-IDs.
+ */
+export function carveAreas(
+  areas: readonly Area[],
+  carves: readonly CarvedArea[],
+  lifts: readonly OsdLiftFeature[],
+  runs: readonly OsdRunFeature[],
+  liftCountries: Map<string, string[]>,
+): Area[] {
+  const result = [...areas];
+  if (carves.length === 0) return result;
+  const counted = countedLifts(lifts);
+  const unitOf = liftUnits(counted);
+  const linesByLift = new Map<string, Coord[][]>();
+  for (const { properties: p, geometry } of counted) {
+    if (geometry?.type !== 'LineString') continue;
+    const id = unitOf(p.id);
+    linesByLift.set(id, [...(linesByLift.get(id) ?? []), geometry.coordinates as Coord[]]);
+  }
+
+  for (const carve of carves) {
+    const index = result.findIndex((a) => a.id === carve.from);
+    const source = result[index];
+    if (!source) throw new Error(`carve: Gebiet ${carve.from} fehlt im Export`);
+    const own = new Set(carve.lifts);
+    for (const id of own) if (!source.liftIds.has(id)) throw new Error(`carve: Lift ${id} gehört nicht zu ${carve.from}`);
+    const id = [...own].sort()[0]!;
+    if (result.some((a) => a.id === id)) throw new Error(`carve: ID ${id} ist schon vergeben`);
+
+    // Ebene Näherung in Metern, genau genug für Abstände innerhalb eines Gebiets
+    const ky = (EARTH_RADIUS_KM * 1000 * Math.PI) / 180;
+    const kx = ky * Math.cos((source.lat * Math.PI) / 180);
+    const xy = (c: Coord): [number, number] => [(c[0] ?? 0) * kx, (c[1] ?? 0) * ky];
+    const segments: { lift: string; a: [number, number]; b: [number, number] }[] = [];
+    for (const lift of source.liftIds) {
+      for (const line of linesByLift.get(lift) ?? []) {
+        for (let i = 1; i < line.length; i++) segments.push({ lift, a: xy(line[i - 1]!), b: xy(line[i]!) });
+      }
+    }
+    const nearestLift = (points: Coord[]): string | null => {
+      let best: { lift: string; d: number } | null = null;
+      for (const point of points) {
+        const p = xy(point);
+        for (const s of segments) {
+          const d = segmentDistance(p, s.a, s.b);
+          if (!best || d < best.d) best = { lift: s.lift, d };
+        }
+      }
+      return best?.lift ?? null;
+    };
+
+    const coords: Coord[] = [...own].flatMap((lift) => (linesByLift.get(lift) ?? []).flat());
+    let pisteKm = 0;
+    for (const run of runs) {
+      if (!run.properties.uses.includes('downhill')) continue;
+      if (!run.properties.skiAreas.some((a) => a.properties.id === carve.from)) continue;
+      const points = runPoints(run.geometry);
+      const lift = nearestLift(points);
+      if (lift === null || !own.has(lift)) continue;
+      pisteKm += runLengthKm(run.geometry);
+      coords.push(...points);
+    }
+
+    const heights = finite(coords.map((c) => c[2]));
+    const liftCoords = [...own].flatMap((lift) => (linesByLift.get(lift) ?? []).flat());
+    const lons = liftCoords.map((c) => c[0] ?? 0);
+    const lats = liftCoords.map((c) => c[1] ?? 0);
+    result[index] = {
+      ...source,
+      liftIds: new Set([...source.liftIds].filter((l) => !own.has(l))),
+      pisteKm: Math.max(0, source.pisteKm - pisteKm),
+    };
+    result.push({
+      id,
+      rawName: carve.name,
+      operating: true,
+      downhill: true,
+      countries: countriesOfLifts(own, liftCountries, []),
+      region: source.region,
+      lat: liftCoords.length > 0 ? (Math.min(...lats) + Math.max(...lats)) / 2 : source.lat,
+      lon: liftCoords.length > 0 ? (Math.min(...lons) + Math.max(...lons)) / 2 : source.lon,
+      pisteKm,
+      liftIds: own,
+      maxElevation: heights.length > 0 ? Math.max(...heights) : null,
+      minElevation: heights.length > 0 ? Math.min(...heights) : null,
+    });
+  }
+  return result;
+}
+
+const EARTH_RADIUS_KM = 6371.0088;
+
+/** Alle Punkte einer Pistengeometrie (Linien und Pistenflächen). */
+function runPoints(geometry: OsdRunFeature['geometry']): Coord[] {
+  const c = geometry.coordinates;
+  switch (geometry.type) {
+    case 'LineString':
+      return c as Coord[];
+    case 'MultiLineString':
+    case 'Polygon':
+      return (c as Coord[][]).flat();
+    case 'MultiPolygon':
+      return (c as Coord[][][]).flat(2);
+    default:
+      return [];
+  }
+}
+
+/** Länge einer Piste wie in den OpenSkiData-Statistiken: nur Linien, Pistenflächen zählen nicht. */
+function runLengthKm(geometry: OsdRunFeature['geometry']): number {
+  if (geometry.type === 'LineString') return lineLengthKm(geometry.coordinates as Coord[]);
+  if (geometry.type === 'MultiLineString') return (geometry.coordinates as Coord[][]).reduce((sum, line) => sum + lineLengthKm(line), 0);
+  return 0;
+}
+
+function lineLengthKm(line: Coord[]): number {
+  let km = 0;
+  for (let i = 1; i < line.length; i++) km += haversineKm(line[i - 1]!, line[i]!);
+  return km;
+}
+
+function haversineKm(a: Coord, b: Coord): number {
+  const rad = Math.PI / 180;
+  const [lon1, lat1, lon2, lat2] = [(a[0] ?? 0) * rad, (a[1] ?? 0) * rad, (b[0] ?? 0) * rad, (b[1] ?? 0) * rad];
+  const h = Math.sin((lat2 - lat1) / 2) ** 2 + Math.cos(lat1) * Math.cos(lat2) * Math.sin((lon2 - lon1) / 2) ** 2;
+  return 2 * EARTH_RADIUS_KM * Math.asin(Math.sqrt(h));
+}
+
+/** Abstand eines Punkts von einer Strecke in der Ebene. */
+function segmentDistance(p: [number, number], a: [number, number], b: [number, number]): number {
+  const [dx, dy] = [b[0] - a[0], b[1] - a[1]];
+  const lengthSq = dx * dx + dy * dy;
+  const t = lengthSq === 0 ? 0 : Math.max(0, Math.min(1, ((p[0] - a[0]) * dx + (p[1] - a[1]) * dy) / lengthSq));
+  return Math.hypot(p[0] - a[0] - t * dx, p[1] - a[1] - t * dy);
 }
 
 /** Ländercodes nach Häufigkeit in den Orten, bei Gleichstand in Reihenfolge des Auftretens. */

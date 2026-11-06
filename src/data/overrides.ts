@@ -16,6 +16,8 @@ import type { Overrides } from './import/transform.ts';
 // - rename, aliases: Name und zusätzliche Aliase
 // - dropAliases: unpassende Aliase aus den OpenSkiData-Namen
 // - countries: Länder, wenn die Regel „Länder der Liftstandorte“ ein Land übersieht
+// - carve: Gebiete, die OpenSkiData nur als Teil eines größeren Eintrags führt, aus ihren Liften bilden;
+//   jede Piste des Eintrags gehört zum nächstgelegenen Lift (ID: kleinste Lift-ID, siehe carveAreas)
 export const OVERRIDES: Overrides = {
   exclude: {
     // Ticket- und Marketingverbünde
@@ -41,7 +43,8 @@ export const OVERRIDES: Overrides = {
     '0f8835a2f4fdcb5d19a63c665a77e9e99f8aa42a': 'Kotelnica Białczańska (Ośrodek): Kaniówka und Lift 13 nur per Skibus',
     // Manuelle Prüfung vom 2026-11-06 (ABGRENZUNG-REVIEW-2.md)
     '70b5c16a6a584808d97c9084dd340e4c8605acdb': "Les Portes du Soleil (Gesamteintrag): Roc d'Enfer und Abondance nicht angebunden; der Kern steht unter merge",
-    '3768b8c925737d2bdad4ea978f036485c508a6b3': 'Drei Zinnen - Tre Cime: Helm/Rotwand, Haunold, Rienz, Prags und Val Comelico nicht verbunden',
+    '3768b8c925737d2bdad4ea978f036485c508a6b3':
+      'Drei Zinnen - Tre Cime: Helm/Rotwand, Haunold (unter carve), Rienz, Prags und Val Comelico nicht verbunden',
     '11b4273361f22eb084db41a3270d66fe1db2e7c1': 'San Martino di Castrozza - Passo Rolle: Passo Rolle nicht angebunden',
     da710e6cc602f54dfb5e724d4758c5fb5384c8d6: 'Damüls-Mellau-Faschina: Faschina nicht angebunden',
     '520ff7dc272019751014d4f031af31439ead297e': 'Yabuli Sports Training Base: nur für Trainingsteams, nicht öffentlich',
@@ -351,4 +354,17 @@ export const OVERRIDES: Overrides = {
   countries: {
     '16e55806d5b38b09939ec81dc1f89ee2cf6c6f15': ['IT', 'SI'], // Sella Nevea - Kanin: alle Lifte in Italien, Pisten vom Kanin aus Slowenien
   },
+  carve: [
+    {
+      from: '3768b8c925737d2bdad4ea978f036485c508a6b3', // Drei Zinnen - Tre Cime (Gesamteintrag)
+      name: 'Haunold, Baranci, Monte Baranci',
+      lifts: [
+        '1281a752745d77a7dfa5a6ba1f24d69b0b62cf7d', // Untertal
+        'ad7cc0b50844eb7a4701800a47eac862cbaaa934', // Monte Baranci
+        'febd7207646fe01f01c9fe311a270c59b05e2d00', // Erschbaum
+        'c7dec1828e34d679d6078441c43939607a3dbb2c', // Lärchen
+        '2882b3ce33f4d0585fa8c04139d78fdd3314942c', // Doris
+      ],
+    },
+  ],
 };
