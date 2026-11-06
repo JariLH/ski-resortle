@@ -15,6 +15,7 @@ import type { Overrides } from './import/transform.ts';
 //   bleiben unverändert, weil die Pisten nicht einzeln vorliegen)
 // - rename, aliases: Name und zusätzliche Aliase
 // - dropAliases: unpassende Aliase aus den OpenSkiData-Namen
+// - countries: Länder, wenn die Regel „Länder der Liftstandorte“ ein Land übersieht
 export const OVERRIDES: Overrides = {
   exclude: {
     // Ticket- und Marketingverbünde
@@ -43,6 +44,7 @@ export const OVERRIDES: Overrides = {
     '3768b8c925737d2bdad4ea978f036485c508a6b3': 'Drei Zinnen - Tre Cime: Helm/Rotwand, Haunold, Rienz, Prags und Val Comelico nicht verbunden',
     '11b4273361f22eb084db41a3270d66fe1db2e7c1': 'San Martino di Castrozza - Passo Rolle: Passo Rolle nicht angebunden',
     da710e6cc602f54dfb5e724d4758c5fb5384c8d6: 'Damüls-Mellau-Faschina: Faschina nicht angebunden',
+    '520ff7dc272019751014d4f031af31439ead297e': 'Yabuli Sports Training Base: nur für Trainingsteams, nicht öffentlich',
     // Fehleinträge
     d720e3ed313444de056ebba8a74932c3039c941b: 'Gsieser Tal: drei einzelne Dorflifte, bis zu 8 km auseinander',
     '17b19c745f7d69545421bdb985f0b981abfc70ae':
@@ -174,7 +176,6 @@ export const OVERRIDES: Overrides = {
     '1ebfc0196ccfeab84482971eeac305effe20251d': 'Jinlongshan', // 金龙山滑雪场 (Zhalantun)
     '255c2d03d5913e4c6d07d8a6c42fb069c75e5908': 'Plai', // Гірськолижний комплекс "Плай"
     '504760d1b9e289f6fa6ab164c3ca7e7e38e714c5': 'Snow Ruyi', // 雪如意滑雪场
-    '520ff7dc272019751014d4f031af31439ead297e': 'Yabuli Sports Training Base', // 亚布力新体委滑雪场 (nur Trainingsteams)
     '6230ab1264d91d8d4008da88a8c62c5495b45fd2': 'Jikepulin Hemu', // 禾木（吉克普林）国际滑雪度假区
     '702a2688073a3dfcf799d1846a21c14ed72dc465': 'Ezhovaya', // ГЛЦ Ежовая
     '72822087f1d1ea98cc8b02132a5ff66d19d2a829': 'Longgangshan', // 龙岗山滑雪场（即将开业）, Fushun
@@ -264,7 +265,6 @@ export const OVERRIDES: Overrides = {
     '19291bcc85a3b6bda5a0817e6a20bf8b8b71a5c0': ['Whistler', 'Blackcomb'],
     '7467b4b92b34f135e5a3258eee64b992f39c95f0': ['Niseko', 'Grand Hirafu', 'Hanazono', 'Niseko Village', 'Annupuri'],
     '562a20a601646b66731b356f79d1bcdd26a6e280': ['Smiggin Holes', 'Guthega', 'Blue Cow'],
-    '520ff7dc272019751014d4f031af31439ead297e': ['亚布力新体委滑雪场'],
     '6230ab1264d91d8d4008da88a8c62c5495b45fd2': ['Hemu', 'Jikepulin', '禾木吉克普林'],
     '72822087f1d1ea98cc8b02132a5ff66d19d2a829': ['龙岗山滑雪场'],
     '7f751dfebffc7eddaf3655f964dbe273d9c25835': ['Golden Valley'],
@@ -347,5 +347,8 @@ export const OVERRIDES: Overrides = {
     b7cad93e857de92335debf15f4d0bfe9a04f4d1b: ['Ski de fond Mont-Tremblant'],
     b120c998e46941d19e34ac55c2a4d9332c2462a0: ['Tawaitnaw Cross Country Ski Trails'],
     '72822087f1d1ea98cc8b02132a5ff66d19d2a829': ['龙岗山滑雪场（即将开业）'],
+  },
+  countries: {
+    '16e55806d5b38b09939ec81dc1f89ee2cf6c6f15': ['IT', 'SI'], // Sella Nevea - Kanin: alle Lifte in Italien, Pisten vom Kanin aus Slowenien
   },
 };

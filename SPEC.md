@@ -37,12 +37,12 @@ Unter der Karte zeigt jeder Tipp Attribute mit richtig/falsch bzw. höher/niedri
 
 - Datenquelle Skigebiete: OpenSkiData (openskidata.org), basiert auf OpenStreetMap
 - Lizenz ODbL: Quellenangabe im Spiel, der abgeleitete Datensatz bleibt unter ODbL
-- Weltweite abdeckung, es zählen nur tatsächliche Skigebiete, keine einzelnen Dorflifte (Bsp.: Skiarena Holzelfingen zählt,  Skilift Undingen vom TSV Undingen in Sonnenbühl zählt nicht)
+- Weltweite abdeckung, es zählen nur tatsächliche Skigebiete, keine einzelnen Dorflifte (Bsp.: Skiarena Holzelfingen zählt,  Skilift Undingen vom TSV Undingen in Sonnenbühl zählt nicht) und keine Trainingsgelände, die nicht öffentlich zugänglich sind
 - Mindestgröße: in Betrieb, mit Alpin-Pisten und Namen, mindestens 3 km Pisten und mindestens 3 Lifte
 - Pistenkilometer: Gesamtlänge der Alpin-Pisten laut OpenSkiData (kein Langlauf)
 - Lifte: alle Lifttypen außer Förderbändern. Ein Lift, der in OpenStreetMap in mehrere Abschnitte zerlegt ist, zählt einmal: Abschnitte mit gleichem Typ und Namen, die nahtlos aneinander anschließen, sind ein Lift (unbenannte Abschnitte nur bei Standseil- und Zahnradbahnen)
 - Höchster Punkt: höchster Punkt von Pisten und Liften; Höhendifferenz: höchster minus tiefster Punkt von Pisten und Liften
-- Länder eines Gebiets: die Länder, in denen seine Lifte stehen (ein Lift über die Grenze zählt für beide), sortiert nach Anzahl der Lifte
+- Länder eines Gebiets: die Länder, in denen seine Lifte stehen (ein Lift über die Grenze zählt für beide), sortiert nach Anzahl der Lifte. Ausnahmen in der Korrekturliste, z. B. wenn Pisten über die Grenze führen, aber alle Lifte auf einer Seite stehen
 - Grenzüberschreitende Gebiete haben mehrere Länder; die Land-Zelle ist grün, wenn Tipp und Lösung mindestens ein Land gemeinsam haben
 - Abgrenzung: Gebiete aus OpenSkiData werden übernommen, eine handgepflegte Korrekturliste schließt Verbünde und Fehleinträge aus, legt Teilgebiete zusammen und setzt Namen und Aliase
 - Der Datensatz wird als Stand (Snapshot) eingecheckt, nicht bei jedem Deploy neu geladen

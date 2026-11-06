@@ -74,6 +74,8 @@ export interface Overrides {
   aliases: Record<string, string[]>;
   /** Aliase, die aus den OpenSkiData-Namen entstehen, aber nicht passen (z. B. Zusätze wie „eröffnet demnächst“). */
   dropAliases: Record<string, string[]>;
+  /** Länder, wenn die Liftstandorte nicht reichen (z. B. Pisten über die Grenze, alle Lifte auf einer Seite). */
+  countries: Record<string, string[]>;
 }
 
 // ---------------------------------------------------------------------------
@@ -368,6 +370,7 @@ export function buildResorts(
     ...Object.keys(overrides.rename),
     ...Object.keys(overrides.aliases),
     ...Object.keys(overrides.dropAliases),
+    ...Object.keys(overrides.countries),
   ];
   report.unknownOverrideIds = [...new Set(overrideIds.filter((id) => !byId.has(id)))];
   const knownLifts = new Set(areas.flatMap((a) => [...a.liftIds]));
@@ -484,7 +487,8 @@ export function buildResorts(
     const variants = [picked.name, ...picked.aliases, ...absorbedNames.flatMap((n) => [pickName(n).name, ...pickName(n).aliases])];
     const aliases = [...(overrides.aliases[area.id] ?? []), ...variants];
     if (!isLatin(name)) report.nonLatinNames.push(name);
-    selected.push({ area, name, aliases });
+    const countries = overrides.countries[area.id];
+    selected.push({ area: countries ? { ...area, countries } : area, name, aliases });
   }
 
   // 5. Doppelte Namen um die Region ergänzen

@@ -21,6 +21,7 @@ const NO_OVERRIDES: Overrides = {
   rename: {},
   aliases: {},
   dropAliases: {},
+  countries: {},
 };
 
 function lifts(prefix: string, count: number): Set<string> {
@@ -365,6 +366,13 @@ describe('buildResorts', () => {
     const a = area({ id: 'a', liftIds: new Set(['l1', 'l2', 'l3']) });
     const { resorts } = buildResorts([a], { ...NO_OVERRIDES, dropLifts: { l3: 'Dorflift' } });
     expect(resorts).toEqual([]);
+  });
+
+  it('setzt Länder aus der Korrekturliste', () => {
+    const a = area({ id: 'a', countries: ['IT'] });
+    const { resorts, report } = buildResorts([a], { ...NO_OVERRIDES, countries: { a: ['IT', 'SI'], weg: ['AT'] } });
+    expect(resorts[0]?.countries).toEqual(['IT', 'SI']);
+    expect(report.unknownOverrideIds).toEqual(['weg']);
   });
 
   it('ergänzt doppelte Namen um die Region', () => {
