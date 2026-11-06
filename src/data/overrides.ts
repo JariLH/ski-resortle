@@ -38,6 +38,11 @@ export const OVERRIDES: Overrides = {
     '1fd29b021584344dd3b8f2960fe561faf357bfe2': 'Schladming Dachstein: Ramsau, Fageralm, Galsterberg nicht mit der 4-Berge-Skischaukel verbunden',
     e615b3d384f0063fb20af785b477a97fdce907bc: 'Val di Fassa: Talname; Belvedere und Buffaure–Ciampac gehören zur Sellaronda, Catinaccio nur per Skibus',
     '0f8835a2f4fdcb5d19a63c665a77e9e99f8aa42a': 'Kotelnica Białczańska (Ośrodek): Kaniówka und Lift 13 nur per Skibus',
+    // Manuelle Prüfung vom 2026-11-06 (ABGRENZUNG-REVIEW-2.md)
+    '70b5c16a6a584808d97c9084dd340e4c8605acdb': "Les Portes du Soleil (Gesamteintrag): Roc d'Enfer und Abondance nicht angebunden; der Kern steht unter merge",
+    '3768b8c925737d2bdad4ea978f036485c508a6b3': 'Drei Zinnen - Tre Cime: Helm/Rotwand, Haunold, Rienz, Prags und Val Comelico nicht verbunden',
+    '11b4273361f22eb084db41a3270d66fe1db2e7c1': 'San Martino di Castrozza - Passo Rolle: Passo Rolle nicht angebunden',
+    da710e6cc602f54dfb5e724d4758c5fb5384c8d6: 'Damüls-Mellau-Faschina: Faschina nicht angebunden',
     // Fehleinträge
     d720e3ed313444de056ebba8a74932c3039c941b: 'Gsieser Tal: drei einzelne Dorflifte, bis zu 8 km auseinander',
     '17b19c745f7d69545421bdb985f0b981abfc70ae':
@@ -96,6 +101,13 @@ export const OVERRIDES: Overrides = {
     '03fcc0299c9030bf81bf077f9a94ee0b327040d9': ['6eebeff16c8b480fc1335c8bed596286706cb776'], // Masella + La Molina (Alp 2500)
     bcdeff232b7a427105725de80f1c6759384c0b83: ['3cc92c542dacc256e6b2eb5d8e8249d1dce4479b'], // Klínovec + Boží Dar
     '0bd87c732c1cffdf2ef8743e9b73c520a67e6bf4': ['f5a337e7d6c0c1fbcb7e18fcc9c27da5384917fb'], // Špindlerův Mlýn: Medvědín + Svatý Petr
+    // Les Portes du Soleil ohne Roc d'Enfer und Abondance: Espace Liberté (Châtel, Torgon, La Chapelle-d'Abondance)
+    // + Les Gets-Morzine + Avoriaz + Champéry/Les Crosets/Champoussin/Morgins
+    '45c1ed53a5c947daeb9df201306473ac8b059788': [
+      'b2d026c49e73f7b49e043de835baa5622adc2e47',
+      '18fc59dac7fcada9451a1b4487a95f2285ac4930',
+      'b61605e5f50bffc3a0908fbb912a31111b48bf62',
+    ],
     // Japan
     c841118d2b5eed99ac5e30f569bb0f2e6ba7892a: ['6d8c8a9a4114428e603d1c434b147d1217879f85'], // Hakuba Goryu + Hakuba 47
     '9e9a84ef97c366ed523b405845fa42051c9d578d': ['b602362c1e045f1cdc1c5aa731c1ee2224205518'], // Hakuba Norikura Onsen + Hakuba Cortina
@@ -235,6 +247,9 @@ export const OVERRIDES: Overrides = {
     '0ebf81b058d47e730773ab8385529520bd35da87': 'Makinoiri Kogen – The Cupid of Romance',
     '6e603305e60b3be0b43a4ec59b3502e7c0dcac33': 'Hyper Bowl Tohachi – Sky Valley',
     '894ab14e1896c260cde7bd239cd48a966ee62c7a': 'Shiga Kogen',
+    // Aufgeteilte Verbünde
+    '45c1ed53a5c947daeb9df201306473ac8b059788': 'Les Portes du Soleil', // Espace Liberté
+    c443cc1044843c9e8087e6c40fe118eb8d8fa18b: '3 Zinnen Dolomites', // 3 Zinnen Dolomites (Dobbiaco - San Candido - Braies - Sesto - Alta Pusteria)
   },
   aliases: {
     '53410fc611922a26e32535c74bb1d9364cef4ecd': ['Lech', 'Zürs', 'St. Anton am Arlberg', 'St. Christoph', 'Stuben', 'Warth', 'Schröcken'],
@@ -313,6 +328,19 @@ export const OVERRIDES: Overrides = {
     '8b0fb3febc7118982235ec4d0e028ccb500f2a65': ['Sugadaira Taro', 'Sugadaira Davos Hill', 'Davos Hill'],
     '0ebf81b058d47e730773ab8385529520bd35da87': ['Makinoiri Kogen', 'The Cupid of Romance', 'Snow Resort Romance no Kamisama', 'Kijimadaira'],
     '6e603305e60b3be0b43a4ec59b3502e7c0dcac33': ['Hyper Bowl Tohachi', 'Sky Valley'],
+    '45c1ed53a5c947daeb9df201306473ac8b059788': [
+      'Portes du Soleil',
+      'Châtel',
+      'Morzine',
+      'Les Gets',
+      'Champéry',
+      'Morgins',
+      'Les Crosets',
+      'Champoussin',
+      "La Chapelle-d'Abondance",
+    ],
+    '8f52a4cffc57a788e69b889d7b5c12197a606047': ["Saint-Jean-d'Aulps", 'Bellevaux'], // Roc d'Enfer
+    c443cc1044843c9e8087e6c40fe118eb8d8fa18b: ['Drei Zinnen', 'Tre Cime', 'Tre Cime Dolomiti', 'Sexten', 'Sesto', 'Helm', 'Monte Elmo', 'Rotwand', 'Croda Rossa'],
     '894ab14e1896c260cde7bd239cd48a966ee62c7a': ['志賀高原', 'Okushiga Kogen', 'Yakebitaiyama', 'Ichinose', 'Takamagahara', 'Nishidateyama', 'Higashidateyama'],
   },
   dropAliases: {
